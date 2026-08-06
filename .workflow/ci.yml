@@ -1,0 +1,29 @@
+version: '1.0'
+name: ci
+displayName: Frontend CI
+triggers:
+  push:
+    branches:
+      precise:
+        - main
+        - master
+  pr:
+    branches:
+      precise:
+        - main
+        - master
+stages:
+  - stage:
+      name: check
+      displayName: Lint Test Build
+      strategy: fast
+      trigger: auto
+      steps:
+        - step: npmbuild@1
+          name: ci
+          displayName: npm ci pipeline
+          inputs:
+            nodeVersion: 20.18
+            goals: |
+              npm ci
+              npm run ci

@@ -1,0 +1,3 @@
+import { SEARCH_FIELD_DEFAULT_WIDTH } from './search'
+import { DICT_LIST_CLASS_OPTIONS } from './dict'
+export { DICT_LIST_CLASS_OPTIONS, SEARCH_FIELD_DEFAULT_WIDTH }

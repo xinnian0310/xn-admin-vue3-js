@@ -1,0 +1,237 @@
+* {
+  box-sizing: border-box;
+  scrollbar-width: thin;
+  scrollbar-color: var(--app-scrollbar-thumb) var(--app-scrollbar-track);
+}
+
+*::-webkit-scrollbar {
+  width: var(--app-scrollbar-size);
+  height: var(--app-scrollbar-size);
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--app-scrollbar-track);
+}
+
+*::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: var(--app-scrollbar-thumb);
+  border: 1px solid transparent;
+  background-clip: padding-box;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--app-scrollbar-thumb-hover);
+  border: 1px solid transparent;
+  background-clip: padding-box;
+}
+
+*::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+html,
+body,
+#app {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  background: var(--app-page-bg, #f5f7fa);
+  color: var(--app-text-primary, #303133);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.page-card {
+  background: var(--app-card-bg, #fff);
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+html.dark .page-card {
+  box-shadow: none;
+  border: 1px solid var(--app-border-color);
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.page-title {
+  margin: 0;
+  font-size: var(--app-font-size-main);
+  font-weight: 600;
+}
+
+/* ========== 全局 UI 变量（默认值；启动时由 config/app.ts applyAppConfig 覆盖） ========== */
+:root {
+  --app-dialog-max-height: 70vh;
+  --app-font-size-sidebar: 14px;
+  --app-font-size-header: 14px;
+  --app-font-size-tags-view: 14px;
+  --app-font-size-main: 14px;
+  --app-tags-view-height: 40px;
+
+  /* 侧栏菜单 */
+  --app-sidebar-bg: #409eff;
+  --app-sidebar-bg-elevated: #337ecc;
+  --app-sidebar-text: rgba(255, 255, 255, 0.85);
+  --app-sidebar-text-active: #ffffff;
+  --app-sidebar-active: #ffffff;
+  --app-sidebar-active-bg: rgba(255, 255, 255, 0.22);
+  --app-sidebar-hover-bg: rgba(255, 255, 255, 0.14);
+  --app-sidebar-border: rgba(255, 255, 255, 0.18);
+  --app-sidebar-rail-bg: #337ecc;
+
+  /* 顶栏 */
+  --app-header-bg: #409eff;
+  --app-header-text: rgba(255, 255, 255, 0.95);
+  --app-header-border: rgba(255, 255, 255, 0.15);
+
+  /* 主色（与 Element Plus 同步） */
+  --app-color-primary: #409eff;
+  --app-color-primary-light-3: #79bbff;
+  --app-color-primary-light-5: #a0cfff;
+  --app-color-primary-light-7: #c6e2ff;
+  --app-color-primary-light-8: #d9ecff;
+  --app-color-primary-light-9: #ecf5ff;
+  --app-color-primary-dark-2: #337ecc;
+  --app-color-primary-rgb: 64, 158, 255;
+
+  /* tags-view */
+  --app-tags-bg: #ffffff;
+  --app-tags-border: #ebeef5;
+  --app-tags-item-bg: #ffffff;
+  --app-tags-item-text: #606266;
+  --app-tags-item-hover-bg: #ecf5ff;
+  --app-tags-item-active-bg: #409eff;
+  --app-tags-item-active-text: #ffffff;
+  --app-tags-scrollbar: #dcdfe6;
+
+  /* 页面表面 */
+  --app-page-bg: #f5f7fa;
+  --app-main-bg: #f5f7fa;
+  --app-main-bg-image: none;
+  --app-card-bg: #ffffff;
+  --app-fill-color: #fafbfc;
+  --app-border-color: #ebeef5;
+  --app-text-muted: #909399;
+  --app-text-primary: #303133;
+  --app-surface-soft: #ecf5ff;
+  --app-surface-soft-border: #a0cfff;
+  --app-card-hover-border: #79bbff;
+
+  /* 滚动条 */
+  --app-scrollbar-size: 6px;
+  --app-scrollbar-thumb: color-mix(in srgb, var(--app-text-muted) 42%, transparent);
+  --app-scrollbar-thumb-hover: color-mix(in srgb, var(--app-text-muted) 68%, transparent);
+  --app-scrollbar-track: transparent;
+}
+
+/* 暗色：补齐业务页硬编码白底以外的常见 EP / 自定义表面 */
+html.dark .el-card {
+  --el-card-bg-color: var(--app-card-bg);
+  border-color: var(--app-border-color);
+}
+
+html.dark .el-table {
+  --el-table-bg-color: var(--app-card-bg);
+  --el-table-tr-bg-color: var(--app-card-bg);
+  --el-table-header-bg-color: var(--app-fill-color);
+  --el-table-row-hover-bg-color: var(--app-fill-color);
+  --el-table-border-color: var(--app-border-color);
+  --el-table-text-color: var(--app-text-primary);
+  --el-table-header-text-color: var(--app-text-primary);
+}
+
+html.dark .el-pagination {
+  --el-pagination-bg-color: transparent;
+  --el-pagination-button-bg-color: var(--app-fill-color);
+  --el-pagination-hover-color: var(--app-color-primary);
+  --el-text-color-regular: var(--app-text-primary);
+  --el-disabled-bg-color: var(--app-fill-color);
+}
+
+html.dark .el-input__wrapper,
+html.dark .el-textarea__inner,
+html.dark .el-select__wrapper {
+  background-color: var(--app-fill-color);
+}
+
+/* 卡片列表：hover 跟随主题主色 */
+.page-card-grid .el-card {
+  border: 1px solid var(--app-border-color);
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.page-card-grid .el-card:hover {
+  border-color: var(--app-card-hover-border);
+}
+
+.page-card-grid .el-card.is-hover-shadow:hover,
+.page-card-grid .el-card:hover {
+  box-shadow: 0 4px 12px rgba(var(--app-color-primary-rgb), 0.12);
+}
+
+/* ========== 全局弹窗：上下居中，外壳不滚动，内容区滚动（高度见 config/app.ts） ========== */
+.el-overlay-dialog {
+  overflow: hidden !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+}
+
+.el-dialog {
+  display: flex;
+  flex-direction: column;
+  max-height: var(--app-dialog-max-height);
+  margin: 0 !important;
+  overflow: hidden;
+}
+
+.el-dialog__header {
+  flex-shrink: 0;
+}
+
+.el-dialog__body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+}
+
+.el-dialog__footer {
+  flex-shrink: 0;
+}
+
+/* 公告 WebSocket 通知：标题 + 右侧查看 */
+.notice-ws-notify {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.notice-ws-notify__text {
+  flex: 1;
+  min-width: 0;
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+.notice-ws-notify__actions {
+  flex-shrink: 0;
+  padding-top: 0;
+}

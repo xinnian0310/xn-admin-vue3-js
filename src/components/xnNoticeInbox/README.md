@@ -1,0 +1,28 @@
+# xnNoticeInbox
+
+消息中心抽屉与公告详情弹窗。状态由 `useNoticeStore` 驱动，自身无 Props。
+
+## 文件
+
+| 文件                | 说明        |
+| ------------------- | ----------- |
+| `xnNoticeInbox.vue` | 消息中心 UI |
+
+## Props / Emits / Slots
+
+无（完全由 Pinia store 控制）。
+
+## 依赖
+
+- `@/stores/notice`
+- `@/utils/datetime`（`formatDateTime`）
+
+## 用法
+
+一般挂在布局顶栏区域，通过 store 打开：
+
+```ts
+noticeStore.openDrawer()
+```
+
+列表点击打开详情（`openNotice`），关闭详情走 `closeDetail`。公告正文以 HTML 渲染（`v-html`）。
