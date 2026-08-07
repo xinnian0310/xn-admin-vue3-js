@@ -59,8 +59,8 @@
               <xnAppIcon v-if="row.icon" :name="row.icon" />
               <span class="route-card__title">{{ row.title }}</span>
             </div>
-            <el-tag :type="row.type === 'MENU' ? 'success' : 'primary'">
-              {{ row.type === 'MENU' ? '菜单' : '目录' }}
+            <el-tag :type="routeTypeTag(row.type)">
+              {{ routeTypeLabel(row.type) }}
             </el-tag>
           </div>
 
@@ -68,6 +68,10 @@
             <div class="route-card__row">
               <span class="label">路径</span>
               <span>{{ row.path || '—' }}</span>
+            </div>
+            <div v-if="row.type === 'LINK'" class="route-card__row">
+              <span class="label">外部链接</span>
+              <span>{{ row.linkUrl || '—' }}</span>
             </div>
             <div class="route-card__row">
               <span class="label">状态</span>
@@ -137,15 +141,22 @@ const columns = [
     options: [
       { value: 'DIR', label: '目录', type: 'primary' },
       { value: 'MENU', label: '菜单', type: 'success' },
+      { value: 'LINK', label: '外部链接', type: 'warning' },
     ],
   },
   { prop: 'path', label: '访问路径', minWidth: 160, showOverflowTooltip: true },
   {
     prop: 'viewPath',
     label: '视图目录',
-    minWidth: 180,
+    minWidth: 160,
     prefix: 'views/',
     suffix: '/',
+  },
+  {
+    prop: 'linkUrl',
+    label: '外部链接',
+    minWidth: 180,
+    showOverflowTooltip: true,
   },
   { prop: 'sort', label: '排序', width: 70 },
   {
@@ -200,6 +211,16 @@ function flattenRoutes(nodes) {
   return result
 }
 const cardRows = computed(() => flattenRoutes(tableRecords.value))
+function routeTypeLabel(type) {
+  if (type === 'MENU') return '菜单'
+  if (type === 'LINK') return '外部链接'
+  return '目录'
+}
+function routeTypeTag(type) {
+  if (type === 'MENU') return 'success'
+  if (type === 'LINK') return 'warning'
+  return 'primary'
+}
 function onTableDataChange(payload) {
   tableRecords.value = payload.records
   cardTotal.value = payload.total

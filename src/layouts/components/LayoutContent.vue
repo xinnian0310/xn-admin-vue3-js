@@ -64,6 +64,13 @@ const footerText = computed(() => appConfig.app.footer?.trim() || '')
   overflow: hidden;
 }
 
+.layout-content__body :deep(> .iframe-page) {
+  flex: 1;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
 /* 系统配置：整页占满，仅标签页内容区滚动 */
 .layout-content__body :deep(> .system-config-page) {
   flex: 1;
@@ -74,7 +81,11 @@ const footerText = computed(() => appConfig.app.footer?.trim() || '')
 
 /* 首页 / 监控等：内容超出时在主区域滚动 */
 .layout-content__body
-  :deep(> *:not(.page-layout):not(.el-container):not(.profile-page):not(.system-config-page)) {
+  :deep(
+    > *:not(.page-layout):not(.el-container):not(.profile-page):not(.system-config-page):not(
+        .iframe-page
+      )
+  ) {
   flex: 1;
   min-width: 0;
   min-height: 0;

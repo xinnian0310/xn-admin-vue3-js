@@ -6,7 +6,7 @@ function routeToMenu(route) {
     id: String(route.id),
     title: route.title,
     icon: route.icon,
-    path: route.type === 'MENU' ? route.path : void 0,
+    path: route.type === 'MENU' || route.type === 'LINK' ? route.path : void 0,
     permission: route.permission,
     affix: route.affix,
     hidden: route.hidden,
@@ -16,7 +16,7 @@ function routeToMenu(route) {
 function collectMenuPaths(routes) {
   const result = []
   for (const route of routes) {
-    if (route.type === 'MENU' && route.path) {
+    if ((route.type === 'MENU' || route.type === 'LINK') && route.path) {
       result.push(route)
     }
     if (route.children?.length) {
