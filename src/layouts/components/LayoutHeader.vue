@@ -39,7 +39,7 @@
 
           <el-dropdown trigger="click" @command="handleCommand">
             <span class="layout-header__user">
-              <el-avatar :size="28">{{ avatarText }}</el-avatar>
+              <el-avatar :size="28" :src="userStore.user?.avatar">{{ avatarText }}</el-avatar>
               <span class="layout-header__username">
                 {{ userStore.user?.nickname || userStore.user?.username }}
               </span>

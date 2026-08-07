@@ -2,17 +2,7 @@
   <div class="page-card profile-page" v-loading="loading">
     <div class="page-header">
       <h2 class="page-title">个人信息</h2>
-      <div class="profile-page__actions">
-        <el-button :icon="Refresh" @click="loadProfile">刷新</el-button>
-        <el-button
-          type="primary"
-          :disabled="!canEdit || saving"
-          :loading="saving"
-          @click="handleSave"
-        >
-          保存资料
-        </el-button>
-      </div>
+      <el-button :icon="Refresh" @click="loadProfile">刷新</el-button>
     </div>
 
     <el-alert
@@ -34,7 +24,7 @@
     />
 
     <div class="profile-page__body">
-      <div class="profile-page__avatar">
+      <aside class="profile-page__avatar">
         <el-avatar :size="88" :src="avatarUrl">{{ avatarText }}</el-avatar>
         <div class="profile-page__name">{{ form.nickname || form.username || '-' }}</div>
         <div class="profile-page__role">{{ roleText }}</div>
@@ -46,99 +36,100 @@
         >
           <el-button size="small" :loading="avatarUploading">更换头像</el-button>
         </el-upload>
-      </div>
+      </aside>
 
-      <div class="profile-page__panels">
-        <el-form
-          ref="formRef"
-          :model="form"
-          :rules="rules"
-          label-width="88px"
-          class="profile-page__form"
-          :disabled="!canEdit"
-        >
-          <el-form-item label="用户名">
-            <el-input v-model="form.username" disabled />
-          </el-form-item>
-          <el-form-item label="昵称" prop="nickname">
-            <el-input v-model="form.nickname" maxlength="50" placeholder="请输入昵称" />
-          </el-form-item>
-          <el-form-item label="邮箱" prop="email">
-            <el-input v-model="form.email" maxlength="100" placeholder="请输入邮箱" />
-          </el-form-item>
-          <el-form-item label="手机" prop="phone">
-            <el-input v-model="form.phone" maxlength="20" placeholder="请输入手机号" />
-          </el-form-item>
-          <el-form-item label="单位">
-            <span>{{ user?.unitName || '—' }}</span>
-          </el-form-item>
-          <el-form-item label="岗位">
-            <span>{{ user?.postName || '—' }}</span>
-          </el-form-item>
-          <el-form-item label="状态">
-            <el-tag :type="user?.status === 1 ? 'success' : 'info'" size="small">
-              {{ user?.status === 1 ? '启用' : '停用' }}
-            </el-tag>
-          </el-form-item>
-          <el-form-item label="角色">
-            <span>{{ roleText }}</span>
-          </el-form-item>
-          <el-form-item label="创建时间">
-            <span>{{ formatTime(user?.createdAt) }}</span>
-          </el-form-item>
-          <el-form-item label="更新时间">
-            <span>{{ formatTime(user?.updatedAt) }}</span>
-          </el-form-item>
-        </el-form>
-
-        <el-form
-          ref="pwdFormRef"
-          :model="pwdForm"
-          :rules="pwdRules"
-          label-width="88px"
-          class="profile-page__form profile-page__pwd"
-          :disabled="!canEdit"
-        >
-          <div class="profile-page__section-title">修改密码</div>
-          <el-form-item label="原密码" prop="oldPassword">
-            <el-input
-              v-model="pwdForm.oldPassword"
-              type="password"
-              show-password
-              autocomplete="current-password"
-              placeholder="请输入原密码"
-            />
-          </el-form-item>
-          <el-form-item label="新密码" prop="newPassword">
-            <el-input
-              v-model="pwdForm.newPassword"
-              type="password"
-              show-password
-              autocomplete="new-password"
-              :placeholder="pwdPlaceholder"
-            />
-            <div v-if="pwdRulesTip" class="form-tip">{{ pwdRulesTip }}</div>
-          </el-form-item>
-          <el-form-item label="确认密码" prop="confirmPassword">
-            <el-input
-              v-model="pwdForm.confirmPassword"
-              type="password"
-              show-password
-              autocomplete="new-password"
-              placeholder="再次输入新密码"
-            />
-          </el-form-item>
-          <el-form-item>
-            <el-button
-              type="warning"
-              :disabled="!canEdit || pwdSaving"
-              :loading="pwdSaving"
-              @click="handleChangePassword"
+      <div class="profile-page__main">
+        <div class="profile-page__panels">
+          <div class="profile-page__panel">
+            <div class="profile-page__section-title">基本信息</div>
+            <el-form
+              ref="formRef"
+              :model="form"
+              :rules="rules"
+              label-width="88px"
+              :disabled="formDisabled"
             >
-              确认修改密码
-            </el-button>
-          </el-form-item>
-        </el-form>
+              <el-form-item label="用户名">
+                <el-input v-model="form.username" disabled />
+              </el-form-item>
+              <el-form-item label="昵称" prop="nickname">
+                <el-input v-model="form.nickname" maxlength="50" placeholder="请输入昵称" />
+              </el-form-item>
+              <el-form-item label="邮箱" prop="email">
+                <el-input v-model="form.email" maxlength="100" placeholder="请输入邮箱" />
+              </el-form-item>
+              <el-form-item label="手机" prop="phone">
+                <el-input v-model="form.phone" maxlength="20" placeholder="请输入手机号" />
+              </el-form-item>
+              <div class="profile-page__meta-grid">
+                <el-form-item label="单位">
+                  <span>{{ user?.unitName || '—' }}</span>
+                </el-form-item>
+                <el-form-item label="岗位">
+                  <span>{{ user?.postName || '—' }}</span>
+                </el-form-item>
+                <el-form-item label="状态">
+                  <el-tag :type="user?.status === 1 ? 'success' : 'info'" size="small">
+                    {{ user?.status === 1 ? '启用' : '停用' }}
+                  </el-tag>
+                </el-form-item>
+                <el-form-item label="角色">
+                  <span>{{ roleText }}</span>
+                </el-form-item>
+              </div>
+            </el-form>
+          </div>
+
+          <div class="profile-page__panel">
+            <div class="profile-page__section-title">修改密码</div>
+            <el-form
+              ref="pwdFormRef"
+              :model="pwdForm"
+              :rules="pwdRules"
+              label-width="88px"
+              :disabled="formDisabled"
+            >
+              <el-form-item label="原密码" prop="oldPassword">
+                <el-input
+                  v-model="pwdForm.oldPassword"
+                  type="password"
+                  show-password
+                  autocomplete="current-password"
+                  placeholder="请输入原密码"
+                />
+              </el-form-item>
+              <el-form-item label="新密码" prop="newPassword">
+                <el-input
+                  v-model="pwdForm.newPassword"
+                  type="password"
+                  show-password
+                  autocomplete="new-password"
+                  :placeholder="pwdPlaceholder"
+                />
+                <div v-if="pwdRulesTip" class="form-tip">{{ pwdRulesTip }}</div>
+              </el-form-item>
+              <el-form-item label="确认密码" prop="confirmPassword">
+                <el-input
+                  v-model="pwdForm.confirmPassword"
+                  type="password"
+                  show-password
+                  autocomplete="new-password"
+                  placeholder="再次输入新密码"
+                />
+              </el-form-item>
+            </el-form>
+          </div>
+        </div>
+
+        <div class="profile-page__footer">
+          <template v-if="canEdit">
+            <template v-if="editing">
+              <el-button :disabled="saving" @click="cancelEdit">取消</el-button>
+              <el-button type="primary" :loading="saving" @click="handleSave">保存</el-button>
+            </template>
+            <el-button v-else type="primary" @click="startEdit">修改</el-button>
+          </template>
+        </div>
       </div>
     </div>
   </div>
@@ -153,21 +144,25 @@ import { storeToRefs } from 'pinia'
 import { changePassword, getPasswordRules, uploadAvatar } from '@/api/auth'
 import { usePermissionStore } from '@/stores/permission'
 import { useUserStore } from '@/stores/user'
-import { formatDateTime } from '@/utils/datetime'
+
 defineOptions({ name: 'Profile' })
+
 const route = useRoute()
 const router = useRouter()
 const userStore = useUserStore()
 const permissionStore = usePermissionStore()
 const { isSuperAdmin } = storeToRefs(permissionStore)
+
 const loading = ref(false)
 const saving = ref(false)
-const pwdSaving = ref(false)
+const editing = ref(false)
 const avatarUploading = ref(false)
 const formRef = ref()
 const pwdFormRef = ref()
 const passwordRules = ref(null)
+
 const canEdit = computed(() => !isSuperAdmin.value)
+const formDisabled = computed(() => !canEdit.value || !editing.value)
 const user = computed(() => userStore.user)
 const forcePwd = computed(() => route.query.forcePwd === '1' || !!user.value?.mustChangePassword)
 const pwdRulesTip = computed(() => passwordRules.value?.tip || '')
@@ -176,25 +171,32 @@ const pwdPlaceholder = computed(() => {
   const max = passwordRules.value?.maxLength ?? 50
   return `${min}-${max} 位新密码`
 })
+
 const form = reactive({
   username: '',
   nickname: '',
   email: '',
   phone: '',
 })
+
 const pwdForm = reactive({
   oldPassword: '',
   newPassword: '',
   confirmPassword: '',
 })
+
 const rules = {
-  nickname: [{ max: 50, message: '昵称不能超过50个字符', trigger: 'blur' }],
+  nickname: [
+    { required: true, message: '请输入昵称', trigger: 'blur' },
+    { max: 50, message: '昵称不能超过50个字符', trigger: 'blur' },
+  ],
   email: [
     { type: 'email', message: '请输入正确的邮箱', trigger: 'blur' },
     { max: 100, message: '邮箱不能超过100个字符', trigger: 'blur' },
   ],
   phone: [{ max: 20, message: '手机号不能超过20个字符', trigger: 'blur' }],
 }
+
 const pwdRules = {
   oldPassword: [{ required: true, message: '请输入原密码', trigger: 'blur' }],
   newPassword: [
@@ -246,11 +248,14 @@ const pwdRules = {
     },
   ],
 }
+
 const avatarText = computed(() => {
   const name = form.nickname || form.username || 'U'
   return name.charAt(0).toUpperCase()
 })
+
 const avatarUrl = computed(() => user.value?.avatar || undefined)
+
 const roleText = computed(() => {
   if (user.value?.roleList?.length) {
     return user.value.roleList.map((r) => r.name || r.code).join('、')
@@ -258,16 +263,47 @@ const roleText = computed(() => {
   if (user.value?.roles?.length) return user.value.roles.join('、')
   return user.value?.role || '-'
 })
-function formatTime(value) {
-  return formatDateTime(value)
-}
+
 function syncForm() {
   form.username = user.value?.username || ''
   form.nickname = user.value?.nickname || ''
   form.email = user.value?.email || ''
   form.phone = user.value?.phone || ''
 }
+
+function resetPwdForm() {
+  pwdForm.oldPassword = ''
+  pwdForm.newPassword = ''
+  pwdForm.confirmPassword = ''
+  pwdFormRef.value?.clearValidate()
+}
+
 watch(user, syncForm, { immediate: true })
+
+watch(
+  forcePwd,
+  (v) => {
+    if (v && canEdit.value) editing.value = true
+  },
+  { immediate: true },
+)
+
+function startEdit() {
+  if (!canEdit.value) {
+    ElMessage.warning('超级管理员禁止编辑个人信息')
+    return
+  }
+  syncForm()
+  resetPwdForm()
+  editing.value = true
+}
+
+function cancelEdit() {
+  syncForm()
+  resetPwdForm()
+  editing.value = false
+}
+
 async function loadProfile() {
   loading.value = true
   try {
@@ -279,6 +315,7 @@ async function loadProfile() {
     loading.value = false
   }
 }
+
 async function handleSave() {
   if (!canEdit.value) {
     ElMessage.warning('超级管理员禁止编辑个人信息')
@@ -286,6 +323,15 @@ async function handleSave() {
   }
   const valid = await formRef.value?.validate().catch(() => false)
   if (!valid) return
+
+  const hasPwdInput = Boolean(
+    pwdForm.oldPassword || pwdForm.newPassword || pwdForm.confirmPassword,
+  )
+  if (forcePwd.value || hasPwdInput) {
+    const pwdValid = await pwdFormRef.value?.validate().catch(() => false)
+    if (!pwdValid) return
+  }
+
   saving.value = true
   try {
     await userStore.updateProfile({
@@ -293,43 +339,32 @@ async function handleSave() {
       email: form.email,
       phone: form.phone,
     })
-    ElMessage.success('保存成功')
+    if (forcePwd.value || hasPwdInput) {
+      await changePassword({
+        oldPassword: pwdForm.oldPassword,
+        newPassword: pwdForm.newPassword,
+      })
+      resetPwdForm()
+      await userStore.fetchProfile()
+      ElMessage.success(forcePwd.value ? '密码已修改' : '资料与密码已保存')
+      if (route.query.forcePwd === '1') {
+        editing.value = false
+        router.replace('/dashboard')
+        return
+      }
+    } else {
+      ElMessage.success('保存成功')
+    }
+    editing.value = false
   } catch (e) {
-    const msg = e && typeof e === 'object' && 'message' in e ? String(e.message) : '保存失败'
+    const msg =
+      e && typeof e === 'object' && 'message' in e ? String(e.message) : '保存失败'
     ElMessage.error(msg || '保存失败')
   } finally {
     saving.value = false
   }
 }
-async function handleChangePassword() {
-  if (!canEdit.value) {
-    ElMessage.warning('超级管理员禁止修改密码')
-    return
-  }
-  const valid = await pwdFormRef.value?.validate().catch(() => false)
-  if (!valid) return
-  pwdSaving.value = true
-  try {
-    await changePassword({
-      oldPassword: pwdForm.oldPassword,
-      newPassword: pwdForm.newPassword,
-    })
-    pwdForm.oldPassword = ''
-    pwdForm.newPassword = ''
-    pwdForm.confirmPassword = ''
-    pwdFormRef.value?.clearValidate()
-    await userStore.fetchProfile()
-    ElMessage.success('密码已修改')
-    if (route.query.forcePwd === '1') {
-      router.replace('/dashboard')
-    }
-  } catch (e) {
-    const msg = e && typeof e === 'object' && 'message' in e ? String(e.message) : '修改失败'
-    ElMessage.error(msg || '修改失败')
-  } finally {
-    pwdSaving.value = false
-  }
-}
+
 async function handleAvatarUpload(options) {
   avatarUploading.value = true
   try {
@@ -338,13 +373,15 @@ async function handleAvatarUpload(options) {
     ElMessage.success('头像已更新')
     options.onSuccess?.(res)
   } catch (e) {
-    const msg = e && typeof e === 'object' && 'message' in e ? String(e.message) : '上传失败'
+    const msg =
+      e && typeof e === 'object' && 'message' in e ? String(e.message) : '上传失败'
     ElMessage.error(msg || '上传失败')
     options.onError?.(e)
   } finally {
     avatarUploading.value = false
   }
 }
+
 async function loadPasswordRules() {
   try {
     const res = await getPasswordRules()
@@ -353,6 +390,7 @@ async function loadPasswordRules() {
     passwordRules.value = null
   }
 }
+
 onMounted(() => {
   loadProfile()
   loadPasswordRules()
@@ -360,23 +398,31 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.profile-page__actions {
+.profile-page {
   display: flex;
-  gap: 8px;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
 .profile-page__alert {
   margin-bottom: 16px;
+  flex-shrink: 0;
 }
 
 .profile-page__body {
-  display: grid;
-  grid-template-columns: 200px 1fr;
+  flex: 1;
+  min-height: 0;
+  display: flex;
   gap: 24px;
-  align-items: start;
+  overflow: hidden;
 }
 
 .profile-page__avatar {
+  flex-shrink: 0;
+  width: 200px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -385,12 +431,15 @@ onMounted(() => {
   background: var(--app-fill-color, #f8fafc);
   border: 1px solid var(--app-border-color);
   border-radius: 12px;
+  align-self: flex-start;
 }
 
 .profile-page__name {
   font-size: 16px;
   font-weight: 600;
   color: var(--app-text-primary, #303133);
+  text-align: center;
+  word-break: break-all;
 }
 
 .profile-page__role {
@@ -399,11 +448,27 @@ onMounted(() => {
   text-align: center;
 }
 
-.profile-page__panels {
+.profile-page__main {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
   display: flex;
   flex-direction: column;
-  gap: 28px;
-  max-width: 560px;
+  overflow: hidden;
+}
+
+.profile-page__panels {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+.profile-page__panel {
+  min-width: 0;
 }
 
 .profile-page__section-title {
@@ -413,8 +478,19 @@ onMounted(() => {
   color: var(--app-text-primary, #303133);
 }
 
-.profile-page__pwd {
-  padding-top: 8px;
+.profile-page__meta-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 12px;
+}
+
+.profile-page__footer {
+  flex-shrink: 0;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding-top: 16px;
+  margin-top: 8px;
   border-top: 1px solid var(--app-border-color, #ebeef5);
 }
 
@@ -425,9 +501,24 @@ onMounted(() => {
   color: var(--app-text-muted, #909399);
 }
 
-@media (max-width: 768px) {
+@media (max-width: 900px) {
   .profile-page__body {
+    flex-direction: column;
+    overflow: auto;
+  }
+
+  .profile-page__avatar {
+    width: 100%;
+    align-self: stretch;
+  }
+
+  .profile-page__main {
+    overflow: visible;
+  }
+
+  .profile-page__panels {
     grid-template-columns: 1fr;
+    overflow: visible;
   }
 }
 </style>

@@ -1,40 +1,91 @@
 import { hexToRgbCss, isLightColor, mixHex } from '@/utils/color'
+
 const CUSTOM_THEME_ID = 'custom'
 const DEFAULT_THEME_SOURCE = 'preset'
+const DEFAULT_THEME_ID = 'blue'
+
 const DEFAULT_CUSTOM_PARTS = {
   primary: '#409eff',
-  sidebarBg: '#409eff',
-  headerBg: '#409eff',
+  sidebarBg: '#337ecc',
+  headerBg: mixHex('#337ecc', '#ffffff', 0.14),
 }
+
+function themeToCustomParts(theme) {
+  return {
+    primary: theme.colors.primary,
+    sidebarBg: theme.colors.sidebar.bg,
+    headerBg: theme.colors.header.bg,
+  }
+}
+
+function brandSider(bg) {
+  return {
+    bg,
+    bgElevated: mixHex(bg, '#000000', 0.1),
+    text: 'rgba(255, 255, 255, 0.85)',
+    textActive: '#ffffff',
+    active: '#ffffff',
+    activeBg: 'rgba(255, 255, 255, 0.22)',
+    hoverBg: 'rgba(255, 255, 255, 0.12)',
+    border: 'rgba(255, 255, 255, 0.14)',
+    railBg: mixHex(bg, '#000000', 0.2),
+  }
+}
+
+function darkSider(primary, siderBg) {
+  return {
+    bg: siderBg,
+    bgElevated: mixHex(siderBg, '#ffffff', 0.06),
+    text: 'rgba(255, 255, 255, 0.75)',
+    textActive: '#ffffff',
+    active: '#ffffff',
+    activeBg: primary,
+    hoverBg: 'rgba(255, 255, 255, 0.1)',
+    border: 'rgba(255, 255, 255, 0.1)',
+    railBg: mixHex(siderBg, '#000000', 0.25),
+  }
+}
+
+function softSider(primary, siderBg) {
+  return {
+    bg: siderBg,
+    bgElevated: mixHex(siderBg, '#ffffff', 0.45),
+    text: '#64748b',
+    textActive: '#0f172a',
+    active: primary,
+    activeBg: `rgba(${hexToRgbCss(primary)}, 0.12)`,
+    hoverBg: 'rgba(15, 23, 42, 0.05)',
+    border: mixHex(siderBg, '#000000', 0.1),
+    railBg: mixHex(siderBg, '#000000', 0.05),
+  }
+}
+
+/** 顶栏：相对侧栏只略提亮，色差保持很小 */
+function liftHeader(siderBg, whiteMix = 0.14) {
+  const bg = mixHex(siderBg, '#ffffff', whiteMix)
+  const light = isLightColor(bg)
+  return {
+    bg,
+    text: light ? '#334155' : 'rgba(255, 255, 255, 0.92)',
+    border: light ? mixHex(bg, '#000000', 0.08) : 'rgba(255, 255, 255, 0.12)',
+  }
+}
+
 const appearanceThemes = {
   light: {
     id: 'appearance-light',
-    name: '\u4EAE\u8272',
-    swatches: ['#ffffff', '#409eff'],
+    name: '亮色',
+    swatches: ['#d9ecff', mixHex('#d9ecff', '#ffffff', 0.12)],
     colors: {
       primary: '#409eff',
-      sidebar: {
-        bg: '#ffffff',
-        bgElevated: '#f5f7fa',
-        text: '#606266',
-        textActive: '#303133',
-        active: '#409eff',
-        activeBg: 'rgba(64, 158, 255, 0.12)',
-        hoverBg: 'rgba(0, 0, 0, 0.04)',
-        border: '#ebeef5',
-        railBg: '#f5f7fa',
-      },
-      header: {
-        bg: '#ffffff',
-        text: '#303133',
-        border: '#ebeef5',
-      },
+      sidebar: softSider('#409eff', '#d9ecff'),
+      header: liftHeader('#d9ecff', 0.12),
     },
   },
   dark: {
     id: 'appearance-dark',
-    name: '\u6697\u8272',
-    swatches: ['#1d1e1f', '#409eff'],
+    name: '暗色',
+    swatches: ['#141414', '#1d1e1f'],
     colors: {
       primary: '#409eff',
       sidebar: {
@@ -48,18 +99,16 @@ const appearanceThemes = {
         border: '#414243',
         railBg: '#0a0a0a',
       },
-      header: {
-        bg: '#1d1e1f',
-        text: 'rgba(255, 255, 255, 0.9)',
-        border: '#414243',
-      },
+      header: liftHeader('#141414', 0.12),
     },
   },
 }
+
 function buildThemeColorsFromParts(parts) {
   const { primary, sidebarBg, headerBg } = parts
   const sidebarLight = isLightColor(sidebarBg)
   const headerLight = isLightColor(headerBg)
+
   return {
     primary,
     sidebar: {
@@ -80,159 +129,108 @@ function buildThemeColorsFromParts(parts) {
     },
   }
 }
+
 const builtinThemes = [
   {
     id: 'blue',
-    name: '\u7ECF\u5178\u84DD',
-    swatches: ['#409eff', '#409eff'],
+    name: '经典蓝',
+    swatches: ['#337ecc', mixHex('#337ecc', '#ffffff', 0.14)],
     colors: {
       primary: '#409eff',
-      sidebar: {
-        bg: '#409eff',
-        bgElevated: '#337ecc',
-        text: 'rgba(255, 255, 255, 0.85)',
-        textActive: '#ffffff',
-        active: '#ffffff',
-        activeBg: 'rgba(255, 255, 255, 0.22)',
-        hoverBg: 'rgba(255, 255, 255, 0.14)',
-        border: 'rgba(255, 255, 255, 0.18)',
-        railBg: '#337ecc',
-      },
-      header: {
-        bg: '#409eff',
-        text: 'rgba(255, 255, 255, 0.95)',
-        border: 'rgba(255, 255, 255, 0.15)',
-      },
+      sidebar: brandSider('#337ecc'),
+      header: liftHeader('#337ecc'),
     },
   },
   {
     id: 'indigo',
-    name: '\u975B\u84DD',
-    swatches: ['#312e81', '#4f46e5'],
+    name: '靛蓝',
+    swatches: ['#312e81', mixHex('#312e81', '#ffffff', 0.14)],
     colors: {
       primary: '#4f46e5',
-      sidebar: {
-        bg: '#312e81',
-        bgElevated: '#1e1b4b',
-        text: 'rgba(255, 255, 255, 0.75)',
-        textActive: '#ffffff',
-        active: '#ffffff',
-        activeBg: 'rgba(255, 255, 255, 0.16)',
-        hoverBg: 'rgba(255, 255, 255, 0.1)',
-        border: 'rgba(255, 255, 255, 0.1)',
-        railBg: '#1e1b4b',
-      },
-      header: {
-        bg: '#4f46e5',
-        text: 'rgba(255, 255, 255, 0.9)',
-        border: 'rgba(255, 255, 255, 0.12)',
-      },
+      sidebar: darkSider('#4f46e5', '#312e81'),
+      header: liftHeader('#312e81'),
     },
   },
   {
     id: 'teal',
-    name: '\u9752\u7EFF',
-    swatches: ['#0f766e', '#14b8a6'],
+    name: '青绿',
+    swatches: ['#115e59', mixHex('#115e59', '#ffffff', 0.14)],
     colors: {
       primary: '#0d9488',
-      sidebar: {
-        bg: '#0f766e',
-        bgElevated: '#115e59',
-        text: 'rgba(255, 255, 255, 0.75)',
-        textActive: '#ffffff',
-        active: '#ffffff',
-        activeBg: 'rgba(255, 255, 255, 0.18)',
-        hoverBg: 'rgba(255, 255, 255, 0.1)',
-        border: 'rgba(255, 255, 255, 0.1)',
-        railBg: '#134e4a',
-      },
-      header: {
-        bg: '#14b8a6',
-        text: 'rgba(255, 255, 255, 0.95)',
-        border: 'rgba(255, 255, 255, 0.15)',
-      },
+      sidebar: brandSider('#115e59'),
+      header: liftHeader('#115e59'),
     },
   },
   {
     id: 'emerald',
-    name: '\u7FE0\u7EFF',
-    swatches: ['#166534', '#22c55e'],
+    name: '翠绿',
+    swatches: ['#14532d', mixHex('#14532d', '#ffffff', 0.14)],
     colors: {
       primary: '#16a34a',
-      sidebar: {
-        bg: '#166534',
-        bgElevated: '#14532d',
-        text: 'rgba(255, 255, 255, 0.75)',
-        textActive: '#ffffff',
-        active: '#ffffff',
-        activeBg: 'rgba(255, 255, 255, 0.18)',
-        hoverBg: 'rgba(255, 255, 255, 0.1)',
-        border: 'rgba(255, 255, 255, 0.1)',
-        railBg: '#14532d',
-      },
-      header: {
-        bg: '#16a34a',
-        text: 'rgba(255, 255, 255, 0.95)',
-        border: 'rgba(255, 255, 255, 0.15)',
-      },
+      sidebar: brandSider('#14532d'),
+      header: liftHeader('#14532d'),
+    },
+  },
+  {
+    id: 'orange',
+    name: '日落橙',
+    swatches: ['#9a3412', mixHex('#9a3412', '#ffffff', 0.14)],
+    colors: {
+      primary: '#ea580c',
+      sidebar: brandSider('#9a3412'),
+      header: liftHeader('#9a3412'),
+    },
+  },
+  {
+    id: 'rose',
+    name: '玫红',
+    swatches: ['#9f1239', mixHex('#9f1239', '#ffffff', 0.14)],
+    colors: {
+      primary: '#e11d48',
+      sidebar: brandSider('#9f1239'),
+      header: liftHeader('#9f1239'),
     },
   },
   {
     id: 'slate',
-    name: '\u6DF1\u7A7A\u7070',
-    swatches: ['#334155', '#64748b'],
+    name: '深空灰',
+    swatches: ['#1e293b', mixHex('#1e293b', '#ffffff', 0.14)],
     colors: {
       primary: '#475569',
-      sidebar: {
-        bg: '#334155',
-        bgElevated: '#1e293b',
-        text: 'rgba(255, 255, 255, 0.75)',
-        textActive: '#ffffff',
-        active: '#ffffff',
-        activeBg: 'rgba(255, 255, 255, 0.16)',
-        hoverBg: 'rgba(255, 255, 255, 0.1)',
-        border: 'rgba(255, 255, 255, 0.1)',
-        railBg: '#1e293b',
-      },
-      header: {
-        bg: '#475569',
-        text: 'rgba(255, 255, 255, 0.9)',
-        border: 'rgba(255, 255, 255, 0.12)',
-      },
+      sidebar: darkSider('#64748b', '#1e293b'),
+      header: liftHeader('#1e293b'),
+    },
+  },
+  {
+    id: 'sky',
+    name: '晴空',
+    swatches: ['#93c5fd', mixHex('#93c5fd', '#ffffff', 0.14)],
+    colors: {
+      primary: '#2563eb',
+      sidebar: softSider('#2563eb', '#93c5fd'),
+      header: liftHeader('#93c5fd'),
     },
   },
   {
     id: 'dawn',
-    name: '\u62C2\u6653',
-    swatches: ['#e8eef7', '#1e4d8c'],
+    name: '拂晓',
+    swatches: ['#cbd5e1', mixHex('#cbd5e1', '#ffffff', 0.14)],
     colors: {
       primary: '#1e4d8c',
-      sidebar: {
-        bg: '#e8eef7',
-        bgElevated: '#dbe4f0',
-        text: '#64748b',
-        textActive: '#0f172a',
-        active: '#1e4d8c',
-        activeBg: 'rgba(30, 77, 140, 0.12)',
-        hoverBg: 'rgba(15, 23, 42, 0.05)',
-        border: '#d0d9e8',
-        railBg: '#dbe4f0',
-      },
-      header: {
-        bg: '#f1f5f9',
-        text: '#334155',
-        border: '#e2e8f0',
-      },
+      sidebar: softSider('#1e4d8c', '#cbd5e1'),
+      header: liftHeader('#cbd5e1'),
     },
   },
 ]
-const DEFAULT_THEME_ID = 'blue'
+
 function findTheme(id) {
   return builtinThemes.find((t) => t.id === id) ?? builtinThemes[0]
 }
+
 function findAppearanceTheme(mode) {
   return appearanceThemes[mode]
 }
+
 function resolveActiveTheme(input) {
   if (input.source === 'appearance') {
     return findAppearanceTheme(input.appearance)
@@ -241,19 +239,21 @@ function resolveActiveTheme(input) {
     const colors = buildThemeColorsFromParts(input.customParts)
     return {
       id: CUSTOM_THEME_ID,
-      name: '\u4E2A\u6027\u5316',
+      name: '个性化',
       swatches: [input.customParts.sidebarBg, input.customParts.primary],
       colors,
     }
   }
   return findTheme(input.themeId)
 }
+
 function resolveThemeColors(themeId, customParts) {
   if (themeId === CUSTOM_THEME_ID) {
     return buildThemeColorsFromParts(customParts)
   }
   return findTheme(themeId).colors
 }
+
 export {
   CUSTOM_THEME_ID,
   DEFAULT_CUSTOM_PARTS,
@@ -266,4 +266,5 @@ export {
   findTheme,
   resolveActiveTheme,
   resolveThemeColors,
+  themeToCustomParts,
 }

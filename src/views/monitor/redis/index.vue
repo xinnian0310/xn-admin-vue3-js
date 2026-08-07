@@ -64,7 +64,7 @@ import xnTable from '@/components/xnTable/xnTable.vue'
 import { usePageUi } from '@/composables/usePageUi'
 import { deleteRedisKey, flushRedis, getRedisMonitor } from '@/api/monitor'
 defineOptions({ name: 'MonitorRedis' })
-/** 权限内容：redis:view/update/delete；table-view/table-edit/table-delete */
+/** 权限内容：redis:view/delete；table-view/table-delete */
 const { searchItems, buttonItems, tableButtonItems } = usePageUi('/monitor/redis')
 const loading = ref(false)
 const monitor = ref(null)

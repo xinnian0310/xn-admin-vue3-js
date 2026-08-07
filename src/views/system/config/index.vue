@@ -27,13 +27,6 @@
     <el-tabs v-model="activeTab" tab-position="left" class="system-config-page__tabs">
       <el-tab-pane label="应用信息" name="app">
         <el-form :model="form" label-width="120px" class="system-config-page__form">
-          <el-form-item label="当前前端工程">
-            <el-input :model-value="clientId" disabled />
-            <p class="system-config-page__field-hint">
-              项目名称 / 应用介绍按此 clientId
-              写入数据库（app.clients），各技术栈互不影响；页脚与品牌图标仍共享。
-            </p>
-          </el-form-item>
           <el-form-item label="项目名称" required>
             <el-input
               v-model="form.app.name"
@@ -666,6 +659,19 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.system-config-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.system-config-page > .page-header {
+  flex-shrink: 0;
+}
+
 .system-config-page__actions {
   display: flex;
   gap: 8px;
@@ -701,11 +707,14 @@ onMounted(() => {
 }
 
 .system-config-page__tabs {
-  min-height: 420px;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .system-config-page__tabs :deep(.el-tabs__header.is-left) {
   margin-right: 0;
+  flex-shrink: 0;
 }
 
 .system-config-page__tabs :deep(.el-tabs__nav-wrap.is-left) {
@@ -719,6 +728,9 @@ onMounted(() => {
 }
 
 .system-config-page__tabs :deep(.el-tabs__content) {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
   padding: 4px 8px 8px 24px;
   overflow: auto;
 }

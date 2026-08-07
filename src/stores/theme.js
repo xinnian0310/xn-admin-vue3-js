@@ -6,7 +6,10 @@ import {
   DEFAULT_THEME_ID,
   DEFAULT_THEME_SOURCE,
   builtinThemes,
+  findAppearanceTheme,
+  findTheme,
   resolveActiveTheme,
+  themeToCustomParts,
 } from '@/config/themes'
 const STORAGE_SOURCE = 'xn-theme-source'
 const STORAGE_THEME_ID = 'xn-theme-id'
@@ -89,12 +92,18 @@ const useThemeStore = defineStore('theme', () => {
   function setTheme(id) {
     themeId.value = id
     localStorage.setItem(STORAGE_THEME_ID, id)
+    const parts = themeToCustomParts(findTheme(id))
+    customParts.value = parts
+    localStorage.setItem(STORAGE_CUSTOM, JSON.stringify(parts))
     persistSource('preset')
     applyCurrent()
   }
   function setAppearance(mode) {
     appearance.value = mode
     localStorage.setItem(STORAGE_APPEARANCE, mode)
+    const parts = themeToCustomParts(findAppearanceTheme(mode))
+    customParts.value = parts
+    localStorage.setItem(STORAGE_CUSTOM, JSON.stringify(parts))
     persistSource('appearance')
     applyCurrent()
   }

@@ -23,8 +23,8 @@ export default defineConfig({
   },
   server: {
     host: '0.0.0.0',
-    // PRD: vue3-js uses 5174; API proxies to xn-admin-cloud gateway
-    port: 1801,
+    // API proxies to xn-admin-cloud gateway
+    port: 1802,
     open: true,
     proxy: {
       '/api': {

@@ -192,7 +192,7 @@ async function handleMenuCommand(command, tag) {
       break
   }
   await nextTick()
-  updateScrollState()
+  scheduleScrollActiveIntoView()
 }
 function updateScrollState() {
   const el = scrollRef.value
@@ -214,26 +214,50 @@ function scrollBy(direction) {
   el.scrollBy({ left: direction * step, behavior: 'smooth' })
 }
 function scrollActiveIntoView() {
-  const activeEl = scrollRef.value?.querySelector('.tags-view__item.is-active')
-  activeEl?.scrollIntoView({ inline: 'nearest', block: 'nearest' })
+  const container = scrollRef.value
+  if (!container) {
+    updateScrollState()
+    return
+  }
+  const activeEl = container.querySelector('.tags-view__item.is-active')
+  if (!activeEl) {
+    updateScrollState()
+    return
+  }
+
+  const padding = 12
+  const cRect = container.getBoundingClientRect()
+  const aRect = activeEl.getBoundingClientRect()
+
+  if (aRect.left < cRect.left + padding) {
+    container.scrollBy({ left: aRect.left - cRect.left - padding, behavior: 'smooth' })
+  } else if (aRect.right > cRect.right - padding) {
+    container.scrollBy({ left: aRect.right - cRect.right + padding, behavior: 'smooth' })
+  }
   updateScrollState()
+}
+function scheduleScrollActiveIntoView() {
+  requestAnimationFrame(() => {
+    requestAnimationFrame(scrollActiveIntoView)
+  })
 }
 watch(
   () => route.path,
   async () => {
     await nextTick()
-    scrollActiveIntoView()
+    scheduleScrollActiveIntoView()
   },
 )
 watch(
   () => tagsViewStore.visitedViews.length,
   async () => {
     await nextTick()
-    updateScrollState()
+    scheduleScrollActiveIntoView()
   },
 )
 onMounted(() => {
   updateScrollState()
+  scheduleScrollActiveIntoView()
   const el = scrollRef.value
   if (el && typeof ResizeObserver !== 'undefined') {
     resizeObserver = new ResizeObserver(() => updateScrollState())
