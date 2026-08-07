@@ -1,4 +1,15 @@
-# 工程规范
+# 贡献指南
+
+感谢关注本仓库。本工程为独立开源前端（Vue 3 + JavaScript）；功能对齐基准仓库 **xn-admin-vue3-ts**，配套后端为 **xn-admin-cloud**。
+
+## 如何贡献
+
+1. Fork 本仓库并创建功能分支
+2. 本地按下方命令完成检查
+3. 提交信息遵循 Conventional Commits
+4. 发起 Pull Request，说明动机与验证方式
+
+安全相关问题请优先阅读 [SECURITY.md](./SECURITY.md)。
 
 ## 本地命令
 
@@ -34,7 +45,3 @@ feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert
 ## CI
 
 - Gitee Go：`.workflow/ci.yml`（需在控制台启用流水线）
-
-## 与基准
-
-功能对齐 [`xn-admin-vue3-ts`](../xn-admin-vue3-ts/)，共用后端 [`xn-admin-cloud`](../xn-admin-cloud/)。详见 [`../docs/PRD-xn-admin-frontend-sync.md`](../docs/PRD-xn-admin-frontend-sync.md)。
