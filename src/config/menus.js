@@ -219,5 +219,24 @@ const menus = [
       },
     ],
   },
+  {
+    id: 'demo',
+    title: '\u7EC4\u4EF6\u6F14\u793A',
+    permission: 'menu:demo',
+    children: [
+      {
+        id: 'demo-ui',
+        title: '\u57FA\u7840\u7EC4\u4EF6',
+        path: '/demos/ui',
+        permission: 'menu:demo:ui',
+      },
+      {
+        id: 'demo-xn',
+        title: '\u7CFB\u7EDF\u7EC4\u4EF6',
+        path: '/demos/xn',
+        permission: 'menu:demo:xn',
+      },
+    ],
+  },
 ]
 export { menus }

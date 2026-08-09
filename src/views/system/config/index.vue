@@ -217,9 +217,9 @@
 
           <section class="ui-split__panel ui-split__panel--aside">
             <div class="ui-split__head">
-              <h3 class="ui-split__title">组件全局</h3>
+              <h3 class="ui-split__title">Element Plus 全局</h3>
               <p class="ui-split__desc">
-                对应 Element Plus Config Provider；主题色请用右上角主题面板。
+                对应本工程 ui.elementPlus。未提交的云端字段由后端深合并保留。主题色请用右上角主题面板。
               </p>
             </div>
             <el-form

@@ -79,12 +79,20 @@ const footerText = computed(() => appConfig.app.footer?.trim() || '')
   overflow: hidden;
 }
 
+/* 组件演示：整页占满，左侧分类固定，右侧内容区滚动 */
+.layout-content__body :deep(> .demo-page) {
+  flex: 1;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
 /* 首页 / 监控等：内容超出时在主区域滚动 */
 .layout-content__body
   :deep(
     > *:not(.page-layout):not(.el-container):not(.profile-page):not(.system-config-page):not(
         .iframe-page
-      )
+      ):not(.demo-page)
   ) {
   flex: 1;
   min-width: 0;

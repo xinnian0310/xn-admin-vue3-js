@@ -4,6 +4,7 @@
     v-model:page-size="size"
     :total="total"
     @page-change="applyLocalPage"
+    @refresh="loadData"
   >
     <template #aside>
       <xnTreePanel
@@ -86,6 +87,7 @@
         stripe
         @selection-change="selectionChangeHandle"
         @page-change="applyLocalPage"
+        @refresh="loadData"
       >
         <template #icon="{ row }">
           <xnAppIcon v-if="row.icon" :name="row.icon" />

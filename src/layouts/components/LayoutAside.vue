@@ -5,17 +5,39 @@
       <span>{{ title }}</span>
     </div>
     <div v-else-if="subtitle" class="layout-aside__subtitle">{{ subtitle }}</div>
-    <el-scrollbar class="layout-aside__scroll">
-      <xnSidebarMenu :menus="menus" />
+    <div class="layout-aside__search">
+      <el-input
+        v-model="searchDraft"
+        clearable
+        placeholder="搜索菜单"
+        @keyup.enter="runSearch"
+        @clear="clearSearch"
+      >
+        <template #append>
+          <el-button :icon="Search" aria-label="搜索菜单" @click="runSearch" />
+        </template>
+      </el-input>
+    </div>
+    <el-scrollbar ref="scrollRef" class="layout-aside__scroll">
+      <xnSidebarMenu
+        ref="menuCompRef"
+        :menus="menus"
+        :highlight-ids="highlightIds"
+      />
     </el-scrollbar>
   </el-aside>
 </template>
 
 <script setup>
+import { computed, nextTick, ref } from 'vue'
+import { Search } from '@element-plus/icons-vue'
 import xnAppBrandLogo from '@/components/xnAppBrandLogo/xnAppBrandLogo.vue'
 import xnSidebarMenu from '@/components/xnSidebarMenu/xnSidebarMenu.vue'
 import { appConfig } from '@/config/app'
-defineProps({
+import { useMenuStore } from '@/stores/menu'
+import { collectSearchOpenIds, filterHiddenMenus, searchMenus } from '@/utils/menu'
+
+const props = defineProps({
   visible: { type: Boolean, required: false, default: true },
   width: { type: String, required: false, default: '220px' },
   title: { type: String, required: false, default: appConfig.app.name },
@@ -23,6 +45,46 @@ defineProps({
   subtitle: { required: false },
   menus: { required: false },
 })
+
+const menuStore = useMenuStore()
+const searchDraft = ref('')
+const highlightIds = ref([])
+const scrollRef = ref(null)
+const menuCompRef = ref(null)
+
+const resolvedMenus = computed(() =>
+  props.menus ? filterHiddenMenus(props.menus) : filterHiddenMenus(menuStore.menus),
+)
+
+function clearSearch() {
+  searchDraft.value = ''
+  highlightIds.value = []
+}
+
+async function runSearch() {
+  const keyword = searchDraft.value.trim()
+  if (!keyword) {
+    highlightIds.value = []
+    return
+  }
+
+  const hits = searchMenus(resolvedMenus.value, keyword)
+  highlightIds.value = hits.map((h) => h.id)
+  const openIds = collectSearchOpenIds(hits)
+  await nextTick()
+  menuCompRef.value?.openMenus(openIds)
+
+  const firstId = hits[0]?.id
+  if (!firstId) return
+  await nextTick()
+  // 等展开动画/DOM 更新后再滚动
+  window.setTimeout(() => {
+    const wrap = scrollRef.value?.wrapRef
+    const scope = wrap ?? document
+    const el = scope.querySelector(`[data-menu-id="${CSS.escape(firstId)}"]`)
+    el?.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
+  }, 120)
+}
 </script>
 
 <style scoped>
@@ -59,14 +121,56 @@ defineProps({
 .layout-aside__subtitle {
   flex-shrink: 0;
   height: 48px;
-  margin: 4px 10px 8px;
+  margin: 4px 10px 0;
   padding: 0 12px;
   display: flex;
   align-items: center;
   color: var(--app-sidebar-text-active);
   font-size: var(--app-font-size-main);
   font-weight: 600;
-  border-bottom: 1px solid var(--app-sidebar-border);
+}
+
+.layout-aside__search {
+  flex-shrink: 0;
+  padding: 8px 10px 4px;
+}
+
+.layout-aside__search :deep(.el-input-group__append) {
+  padding: 0;
+  background: color-mix(in srgb, var(--app-sidebar-text) 12%, transparent);
+  border-color: color-mix(in srgb, var(--app-sidebar-text) 22%, transparent);
+  box-shadow: none;
+}
+
+.layout-aside__search :deep(.el-input__wrapper) {
+  background: color-mix(in srgb, var(--app-sidebar-text) 8%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--app-sidebar-text) 22%, transparent) inset;
+}
+
+.layout-aside__search :deep(.el-input__inner) {
+  color: var(--app-sidebar-text-active);
+}
+
+.layout-aside__search :deep(.el-input__inner::placeholder) {
+  color: color-mix(in srgb, var(--app-sidebar-text) 70%, transparent);
+}
+
+.layout-aside__search :deep(.el-input__wrapper:hover),
+.layout-aside__search :deep(.el-input__wrapper.is-focus) {
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--app-sidebar-text-active) 55%, transparent) inset;
+}
+
+.layout-aside__search :deep(.el-button) {
+  margin: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  color: var(--app-sidebar-text-active);
+}
+
+.layout-aside__search :deep(.el-button:hover) {
+  color: var(--app-sidebar-active);
+  background: color-mix(in srgb, var(--app-sidebar-text) 14%, transparent);
 }
 
 .layout-aside__scroll {

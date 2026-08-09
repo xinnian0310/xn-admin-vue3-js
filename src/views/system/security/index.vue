@@ -4,6 +4,7 @@
     v-model:page-size="size"
     :total="total"
     @page-change="applyLocalPage"
+    @refresh="loadData"
   >
     <template #aside>
       <xnTreePanel title="安全策略" width="380px" :filterable="false">
@@ -133,6 +134,7 @@
         stripe
         @selection-change="selectionChangeHandle"
         @page-change="applyLocalPage"
+        @refresh="loadData"
       >
         <template #remainSeconds="{ row }">
           {{ formatRemain(row.remainSeconds) }}

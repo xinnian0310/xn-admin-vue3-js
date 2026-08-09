@@ -3,7 +3,11 @@
     <el-sub-menu
       v-if="item.children?.length"
       :index="item.id"
-      :class="{ 'is-self-active': isSelfActive(item) }"
+      :data-menu-id="item.id"
+      :class="{
+        'is-self-active': isSelfActive(item),
+        'is-search-hit': isSearchHit(item.id),
+      }"
     >
       <template #title>
         <span
@@ -15,10 +19,15 @@
           <span>{{ item.title }}</span>
         </span>
       </template>
-      <xnSidebarMenuItem :menus="item.children" />
+      <xnSidebarMenuItem :menus="item.children" :highlight-ids="highlightIds" />
     </el-sub-menu>
 
-    <el-menu-item v-else-if="item.path" :index="item.path">
+    <el-menu-item
+      v-else-if="item.path"
+      :index="item.path"
+      :data-menu-id="item.id"
+      :class="{ 'is-search-hit': isSearchHit(item.id) }"
+    >
       <xnAppIcon v-if="item.icon" :name="item.icon" class="menu-icon" />
       <span>{{ item.title }}</span>
     </el-menu-item>
@@ -28,17 +37,27 @@
 <script setup>
 import { useRoute, useRouter } from 'vue-router'
 import xnAppIcon from '@/components/xnAppIcon/xnAppIcon.vue'
+
 defineOptions({ name: 'xnSidebarMenuItem' })
-defineProps({
+
+const props = defineProps({
   menus: { required: true },
+  highlightIds: { type: Array, required: false, default: () => [] },
 })
+
 const route = useRoute()
 const router = useRouter()
+
+function isSearchHit(id) {
+  return props.highlightIds.includes(id)
+}
+
 function isSelfActive(item) {
   if (!item.path) return false
   const active = route.meta.activeMenu || route.path.replace(/\/save(\/.*)?$/, '') || route.path
   return active === item.path
 }
+
 /** 有 path 的父级：点标题跳转；点右侧箭头仍展开/收起 */
 function onTitleClick(e, item) {
   if (!item.path) return

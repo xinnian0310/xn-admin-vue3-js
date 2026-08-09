@@ -21,6 +21,10 @@ export default defineConfig({
   optimizeDeps: {
     include: ['exceljs'],
   },
+  build: {
+    outDir: '../www/xn-admin-vue3-js',
+    emptyOutDir: true,
+  },
   server: {
     host: '0.0.0.0',
     // API proxies to xn-admin-cloud gateway

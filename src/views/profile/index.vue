@@ -15,12 +15,12 @@
     />
 
     <el-alert
-      v-if="!canEdit"
+      v-if="!canEditProfile"
       type="warning"
       :closable="false"
       show-icon
       class="profile-page__alert"
-      title="超级管理员账号禁止编辑个人信息"
+      title="超级管理员仅可修改密码，不可改用户名与基本资料"
     />
 
     <div class="profile-page__body">
@@ -29,7 +29,7 @@
         <div class="profile-page__name">{{ form.nickname || form.username || '-' }}</div>
         <div class="profile-page__role">{{ roleText }}</div>
         <el-upload
-          v-if="canEdit"
+          v-if="canEditProfile"
           :show-file-list="false"
           :http-request="handleAvatarUpload"
           accept="image/jpeg,image/png,image/gif,image/webp"
@@ -47,7 +47,7 @@
               :model="form"
               :rules="rules"
               label-width="88px"
-              :disabled="formDisabled"
+              :disabled="profileFormDisabled"
             >
               <el-form-item label="用户名">
                 <el-input v-model="form.username" disabled />
@@ -87,7 +87,7 @@
               :model="pwdForm"
               :rules="pwdRules"
               label-width="88px"
-              :disabled="formDisabled"
+              :disabled="passwordFormDisabled"
             >
               <el-form-item label="原密码" prop="oldPassword">
                 <el-input
@@ -127,7 +127,9 @@
               <el-button :disabled="saving" @click="cancelEdit">取消</el-button>
               <el-button type="primary" :loading="saving" @click="handleSave">保存</el-button>
             </template>
-            <el-button v-else type="primary" @click="startEdit">修改</el-button>
+            <el-button v-else type="primary" @click="startEdit">
+              {{ canEditProfile ? '修改' : '修改密码' }}
+            </el-button>
           </template>
         </div>
       </div>
@@ -161,8 +163,12 @@ const formRef = ref()
 const pwdFormRef = ref()
 const passwordRules = ref(null)
 
-const canEdit = computed(() => !isSuperAdmin.value)
-const formDisabled = computed(() => !canEdit.value || !editing.value)
+const canEditProfile = computed(() => !isSuperAdmin.value)
+const canEditPassword = computed(() => true)
+const canEdit = computed(() => canEditProfile.value || canEditPassword.value)
+const profileFormDisabled = computed(() => !canEditProfile.value || !editing.value)
+const passwordFormDisabled = computed(() => !canEditPassword.value || !editing.value)
+const formDisabled = profileFormDisabled
 const user = computed(() => userStore.user)
 const forcePwd = computed(() => route.query.forcePwd === '1' || !!user.value?.mustChangePassword)
 const pwdRulesTip = computed(() => passwordRules.value?.tip || '')
@@ -283,16 +289,12 @@ watch(user, syncForm, { immediate: true })
 watch(
   forcePwd,
   (v) => {
-    if (v && canEdit.value) editing.value = true
+    if (v && canEditPassword.value) editing.value = true
   },
   { immediate: true },
 )
 
 function startEdit() {
-  if (!canEdit.value) {
-    ElMessage.warning('超级管理员禁止编辑个人信息')
-    return
-  }
   syncForm()
   resetPwdForm()
   editing.value = true
@@ -317,36 +319,41 @@ async function loadProfile() {
 }
 
 async function handleSave() {
-  if (!canEdit.value) {
-    ElMessage.warning('超级管理员禁止编辑个人信息')
-    return
-  }
-  const valid = await formRef.value?.validate().catch(() => false)
-  if (!valid) return
-
   const hasPwdInput = Boolean(
     pwdForm.oldPassword || pwdForm.newPassword || pwdForm.confirmPassword,
   )
-  if (forcePwd.value || hasPwdInput) {
+  if (canEditProfile.value) {
+    const valid = await formRef.value?.validate().catch(() => false)
+    if (!valid) return
+  }
+  if (forcePwd.value || hasPwdInput || !canEditProfile.value) {
     const pwdValid = await pwdFormRef.value?.validate().catch(() => false)
     if (!pwdValid) return
   }
 
   saving.value = true
   try {
-    await userStore.updateProfile({
-      nickname: form.nickname,
-      email: form.email,
-      phone: form.phone,
-    })
-    if (forcePwd.value || hasPwdInput) {
+    if (canEditProfile.value) {
+      await userStore.updateProfile({
+        nickname: form.nickname,
+        email: form.email,
+        phone: form.phone,
+      })
+    }
+    if (forcePwd.value || hasPwdInput || !canEditProfile.value) {
       await changePassword({
         oldPassword: pwdForm.oldPassword,
         newPassword: pwdForm.newPassword,
       })
       resetPwdForm()
       await userStore.fetchProfile()
-      ElMessage.success(forcePwd.value ? '密码已修改' : '资料与密码已保存')
+      ElMessage.success(
+        forcePwd.value
+          ? '密码已修改'
+          : canEditProfile.value
+            ? '资料与密码已保存'
+            : '密码已修改',
+      )
       if (route.query.forcePwd === '1') {
         editing.value = false
         router.replace('/dashboard')

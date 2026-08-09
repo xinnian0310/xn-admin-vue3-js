@@ -195,6 +195,7 @@
 <script setup>
 import {
   computed,
+  getCurrentInstance,
   nextTick,
   onBeforeUnmount,
   onMounted,
@@ -244,6 +245,7 @@ const emit = defineEmits([
   'update:page',
   'update:pageSize',
   'page-change',
+  'refresh',
   'selection-change',
   'switch-change',
   'data-change',
@@ -652,6 +654,12 @@ async function loadColumnSettings() {
 function handleRefresh() {
   if (isApiMode.value) {
     loadData()
+    return
+  }
+  // Prefer @refresh when parent listens; else fall back to page-change
+  const hasRefreshListener = !!getCurrentInstance()?.vnode.props?.onRefresh
+  if (hasRefreshListener) {
+    emit('refresh')
     return
   }
   emit('page-change')

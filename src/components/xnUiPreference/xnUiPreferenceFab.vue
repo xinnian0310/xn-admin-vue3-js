@@ -2,10 +2,10 @@
   <button
     type="button"
     class="ui-pref-fab"
-    :class="{ 'is-dragging': dragging, 'is-open': drawerVisible }"
+    :class="{ 'is-dragging': dragging, 'is-open': drawerVisible, 'is-peek': peek }"
     :style="{ top: `${topPx}px` }"
-    title="布局与字号（可上下拖动）"
-    aria-label="布局与字号"
+    title="界面偏好（可上下拖动，平时半隐）"
+    aria-label="界面偏好"
     @pointerdown="onPointerDown"
   >
     <el-icon :size="16"><Setting /></el-icon>
@@ -116,10 +116,13 @@ import { parsePxInt, toPx } from '@/utils/px'
 const STORAGE_KEY = 'xn-ui-pref-fab-top'
 const FAB_HEIGHT = 48
 const DRAG_THRESHOLD = 4
+const EDGE_PROXIMITY = 28
+const Y_PAD = 48
 const uiPrefStore = useUiPreferenceStore()
 const saving = ref(false)
 const resetting = ref(false)
 const dragging = ref(false)
+const peek = ref(false)
 const topPx = ref(loadTop())
 const drawerVisible = computed({
   get: () => uiPrefStore.drawerVisible,
@@ -203,11 +206,23 @@ function onPointerUp(e) {
 function onResize() {
   topPx.value = clampTop(topPx.value)
 }
+function onMouseMove(e) {
+  if (dragging.value || drawerVisible.value) {
+    peek.value = true
+    return
+  }
+  const nearRight = window.innerWidth - e.clientX <= EDGE_PROXIMITY
+  const nearY =
+    e.clientY >= topPx.value - Y_PAD && e.clientY <= topPx.value + FAB_HEIGHT + Y_PAD
+  peek.value = nearRight && nearY
+}
 onMounted(() => {
   window.addEventListener('resize', onResize)
+  window.addEventListener('mousemove', onMouseMove, { passive: true })
 })
 onUnmounted(() => {
   window.removeEventListener('resize', onResize)
+  window.removeEventListener('mousemove', onMouseMove)
   window.removeEventListener('pointermove', onPointerMove)
   window.removeEventListener('pointerup', onPointerUp)
   window.removeEventListener('pointercancel', onPointerUp)
@@ -253,7 +268,7 @@ async function onReset() {
   position: fixed;
   right: 0;
   z-index: 2800;
-  width: 22px;
+  width: 36px;
   height: 48px;
   padding: 0;
   display: inline-flex;
@@ -261,20 +276,33 @@ async function onReset() {
   justify-content: center;
   border: none;
   border-radius: 24px 0 0 24px;
-  background: var(--el-color-primary);
+  background: var(--app-color-primary, var(--el-color-primary));
   color: #fff;
   cursor: grab;
-  box-shadow: -2px 2px 10px color-mix(in srgb, var(--el-color-primary) 40%, transparent);
+  box-shadow: -2px 2px 10px
+    color-mix(in srgb, var(--app-color-primary, var(--el-color-primary)) 40%, transparent);
+  transform: translateX(50%);
   transition:
-    width 0.18s ease,
+    transform 0.2s ease,
     filter 0.15s ease;
   touch-action: none;
   user-select: none;
 }
 
+.ui-pref-fab::before {
+  content: '';
+  position: absolute;
+  top: -12px;
+  bottom: -12px;
+  left: -20px;
+  right: 0;
+}
+
+.ui-pref-fab.is-peek,
 .ui-pref-fab:hover,
-.ui-pref-fab.is-open {
-  width: 36px;
+.ui-pref-fab.is-open,
+.ui-pref-fab.is-dragging {
+  transform: translateX(0);
   filter: brightness(1.05);
 }
 

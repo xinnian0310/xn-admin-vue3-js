@@ -8,6 +8,23 @@ const request = axios.create({
   timeout: 15e3,
 })
 const warnedApis = /* @__PURE__ */ new Set()
+/** 相同错误文案在窗口内只提示一次，避免并发失败刷屏 */
+const ERROR_TOAST_DEDUP_MS = 3000
+const recentErrorToasts = /* @__PURE__ */ new Map()
+function showRequestError(content) {
+  const now = Date.now()
+  const lastAt = recentErrorToasts.get(content)
+  if (lastAt != null && now - lastAt < ERROR_TOAST_DEDUP_MS) {
+    return
+  }
+  recentErrorToasts.set(content, now)
+  if (recentErrorToasts.size > 40) {
+    for (const [key, at] of recentErrorToasts) {
+      if (now - at >= ERROR_TOAST_DEDUP_MS) recentErrorToasts.delete(key)
+    }
+  }
+  ElMessage.error(content)
+}
 const HTTP_STATUS_MESSAGES = {
   400: '\u8BF7\u6C42\u53C2\u6570\u9519\u8BEF',
   401: '\u767B\u5F55\u5DF2\u8FC7\u671F\uFF0C\u8BF7\u91CD\u65B0\u767B\u5F55',
@@ -92,7 +109,7 @@ request.interceptors.request.use((config) => {
     const key = `${method} ${fullPath}`
     if (!warnedApis.has(key)) {
       warnedApis.add(key)
-      ElMessage.error(
+      showRequestError(
         `\u63A5\u53E3\u672A\u5728\u6743\u9650\u5185\u5BB9\u4E2D\u767B\u8BB0\uFF0C\u65E0\u6CD5\u8BBF\u95EE\uFF1A${key}`,
       )
     }
@@ -106,7 +123,7 @@ request.interceptors.response.use(
   (response) => {
     const res = response.data
     if (res.code !== 200) {
-      ElMessage.error(res.message || '\u8BF7\u6C42\u5931\u8D25')
+      showRequestError(res.message || '\u8BF7\u6C42\u5931\u8D25')
       return Promise.reject(new Error(res.message || '\u8BF7\u6C42\u5931\u8D25'))
     }
     if (res.data !== void 0) {
@@ -126,7 +143,7 @@ request.interceptors.response.use(
       })
       router.push('/login')
     }
-    ElMessage.error(message)
+    showRequestError(message)
     return Promise.reject(error)
   },
 )

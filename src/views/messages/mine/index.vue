@@ -4,6 +4,7 @@
     v-model:page-size="size"
     :total="total"
     @page-change="applyLocalPage"
+    @refresh="loadData"
   >
     <template #search>
       <xnSearch :search-item="searchItems" @query-form="inquires" @reset="reset" />
@@ -29,6 +30,7 @@
         stripe
         @selection-change="selectionChangeHandle"
         @page-change="applyLocalPage"
+        @refresh="loadData"
       >
         <template #sentAt="{ row }">
           {{ formatDateTime(row.sentAt) }}

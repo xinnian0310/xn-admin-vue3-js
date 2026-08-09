@@ -57,11 +57,58 @@ function findFirstNavigablePath(item) {
   }
   return void 0
 }
+/** 模糊匹配菜单标题：包含关键词，或字符顺序匹配（忽略大小写） */
+function fuzzyMatchMenuTitle(title, keyword) {
+  const t = title.toLowerCase()
+  const k = keyword.toLowerCase().trim()
+  if (!k) return false
+  if (t.includes(k)) return true
+  let i = 0
+  for (const ch of t) {
+    if (ch === k[i]) i += 1
+    if (i >= k.length) return true
+  }
+  return false
+}
+/** 在菜单树中模糊检索标题，深度优先，不跳转 */
+function searchMenus(items, keyword) {
+  const hits = []
+  const k = keyword.trim()
+  if (!k) return hits
+  function walk(list, ancestors) {
+    for (const item of list) {
+      if (fuzzyMatchMenuTitle(item.title, k)) {
+        hits.push({ id: item.id, title: item.title, ancestorIds: ancestors })
+      }
+      if (item.children?.length) {
+        walk(item.children, [...ancestors, item.id])
+      }
+    }
+  }
+  walk(items, [])
+  return hits
+}
+/** 搜索命中项需展开的祖先 id（去重，保序） */
+function collectSearchOpenIds(hits) {
+  const seen = new Set()
+  const ids = []
+  for (const hit of hits) {
+    for (const id of hit.ancestorIds) {
+      if (seen.has(id)) continue
+      seen.add(id)
+      ids.push(id)
+    }
+  }
+  return ids
+}
 export {
   collectOpenMenuIds,
+  collectSearchOpenIds,
   filterHiddenMenus,
   findFirstNavigablePath,
   findMenuByPath,
   findTopLevelMenu,
+  fuzzyMatchMenuTitle,
   getAffixTags,
+  searchMenus,
 }

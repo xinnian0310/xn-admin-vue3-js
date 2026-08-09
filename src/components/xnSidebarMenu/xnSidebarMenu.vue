@@ -11,7 +11,7 @@
     :text-color="textColor"
     :active-text-color="activeColor"
   >
-    <xnSidebarMenuItem :menus="resolvedMenus" />
+    <xnSidebarMenuItem :menus="resolvedMenus" :highlight-ids="highlightIds" />
   </el-menu>
 </template>
 
@@ -22,10 +22,13 @@ import { useMenuStore } from '@/stores/menu'
 import { useThemeStore } from '@/stores/theme'
 import { collectOpenMenuIds, filterHiddenMenus } from '@/utils/menu'
 import xnSidebarMenuItem from './xnSidebarMenuItem.vue'
+
 const props = defineProps({
   mode: { type: String, required: false, default: 'vertical' },
   menus: { required: false },
+  highlightIds: { type: Array, required: false, default: () => [] },
 })
+
 const route = useRoute()
 const menuStore = useMenuStore()
 const themeStore = useThemeStore()
@@ -58,6 +61,14 @@ watch(
   },
   { immediate: true },
 )
+
+function openMenus(ids) {
+  for (const id of ids) {
+    menuRef.value?.open(id)
+  }
+}
+
+defineExpose({ openMenus })
 </script>
 
 <style scoped>
@@ -122,5 +133,14 @@ watch(
 
 .sidebar-menu:not(.is-horizontal) :deep(.el-sub-menu.is-opened > .el-sub-menu__title) {
   color: var(--app-sidebar-text-active);
+}
+
+/* 菜单搜索命中高亮（不跳转、不抢占当前路由激活态） */
+.sidebar-menu:not(.is-horizontal) :deep(.el-menu-item.is-search-hit),
+.sidebar-menu:not(.is-horizontal) :deep(.el-sub-menu.is-search-hit > .el-sub-menu__title) {
+  color: var(--app-sidebar-text-active) !important;
+  background-color: color-mix(in srgb, var(--app-sidebar-active) 28%, transparent) !important;
+  box-shadow: inset 3px 0 0 var(--app-sidebar-active);
+  font-weight: 600;
 }
 </style>
