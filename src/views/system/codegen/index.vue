@@ -194,6 +194,7 @@ import xnTableActions from '@/components/xnButton/xnTableActions.vue'
 import xnTable from '@/components/xnTable/xnTable.vue'
 import { usePageUi } from '@/composables/usePageUi'
 import { generate, listColumns, listTables } from '@/api/codegen'
+import { showCaughtError } from '@/utils/request'
 defineOptions({ name: 'SystemCodegen' })
 const pageUi = usePageUi('/system/codegen')
 const { buttonItems, tableButtonItems } = pageUi
@@ -293,7 +294,7 @@ async function loadData() {
     allTables.value = res.data ?? []
     applyFilter()
   } catch (e) {
-    ElMessage.error(e instanceof Error ? e.message : '加载库表失败')
+    showCaughtError(e, '加载库表失败')
   } finally {
     loading.value = false
   }
@@ -383,7 +384,7 @@ async function openWizard(row) {
       required: c.required,
     }))
   } catch (e) {
-    ElMessage.error(e instanceof Error ? e.message : '加载表结构失败')
+    showCaughtError(e, '加载表结构失败')
     wizardVisible.value = false
   } finally {
     wizardLoading.value = false
@@ -422,7 +423,7 @@ async function doGenerate() {
     )
     wizardVisible.value = false
   } catch (e) {
-    ElMessage.error(e instanceof Error ? e.message : '生成失败')
+    showCaughtError(e, '生成失败')
   } finally {
     generating.value = false
   }

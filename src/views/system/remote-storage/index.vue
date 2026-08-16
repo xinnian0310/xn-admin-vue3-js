@@ -94,6 +94,7 @@ import { usePageUi } from '@/composables/usePageUi'
 import { applyRemoteAppConfig, defaultAppConfig } from '@/config/app'
 import { getSystemConfigSection, updateSystemConfigSection } from '@/api/system-config'
 import { APP_CLIENT_ID } from '@/config/client'
+import { showCaughtError } from '@/utils/request'
 defineOptions({ name: 'RemoteStorage' })
 const SEARCH_FALLBACK = [
   { label: '综合查询', prop: 'FuzzyWord', type: 'input', placeholder: '名字 / 路径' },
@@ -223,7 +224,7 @@ async function loadData() {
     const res = await getSystemConfigSection('storage')
     applySection(res.data)
   } catch (e) {
-    ElMessage.error(e?.message || '加载失败')
+    showCaughtError(e, '加载失败')
   } finally {
     loading.value = false
   }
@@ -271,7 +272,7 @@ async function persist(rows, successText) {
     ElMessage.success(successText)
     return true
   } catch (e) {
-    ElMessage.error(e?.message || '保存失败')
+    showCaughtError(e, '保存失败')
     return false
   } finally {
     saving.value = false

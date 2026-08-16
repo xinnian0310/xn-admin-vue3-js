@@ -20,7 +20,11 @@
       :closable="false"
       show-icon
       class="profile-page__alert"
-      title="超级管理员仅可修改密码，不可改用户名与基本资料"
+      :title="
+        canEditPassword
+          ? '超级管理员仅可修改密码，不可改用户名与基本资料'
+          : '管理员不可修改个人信息与密码'
+      "
     />
 
     <div class="profile-page__body">
@@ -146,6 +150,7 @@ import { storeToRefs } from 'pinia'
 import { changePassword, getPasswordRules, uploadAvatar } from '@/api/auth'
 import { usePermissionStore } from '@/stores/permission'
 import { useUserStore } from '@/stores/user'
+import { showCaughtError } from '@/utils/request'
 
 defineOptions({ name: 'Profile' })
 
@@ -153,7 +158,7 @@ const route = useRoute()
 const router = useRouter()
 const userStore = useUserStore()
 const permissionStore = usePermissionStore()
-const { isSuperAdmin } = storeToRefs(permissionStore)
+const { isSuperAdmin, roles } = storeToRefs(permissionStore)
 
 const loading = ref(false)
 const saving = ref(false)
@@ -163,8 +168,8 @@ const formRef = ref()
 const pwdFormRef = ref()
 const passwordRules = ref(null)
 
-const canEditProfile = computed(() => !isSuperAdmin.value)
-const canEditPassword = computed(() => true)
+const canEditProfile = computed(() => !isSuperAdmin.value && !roles.value.includes('ADMIN'))
+const canEditPassword = computed(() => !roles.value.includes('ADMIN'))
 const canEdit = computed(() => canEditProfile.value || canEditPassword.value)
 const profileFormDisabled = computed(() => !canEditProfile.value || !editing.value)
 const passwordFormDisabled = computed(() => !canEditPassword.value || !editing.value)
@@ -310,8 +315,8 @@ async function loadProfile() {
   try {
     await userStore.fetchProfile()
     syncForm()
-  } catch {
-    ElMessage.error('获取个人信息失败')
+  } catch (e) {
+    showCaughtError(e, '获取个人信息失败')
   } finally {
     loading.value = false
   }
@@ -357,8 +362,7 @@ async function handleSave() {
     }
     editing.value = false
   } catch (e) {
-    const msg = e && typeof e === 'object' && 'message' in e ? String(e.message) : '保存失败'
-    ElMessage.error(msg || '保存失败')
+    showCaughtError(e, '保存失败')
   } finally {
     saving.value = false
   }
@@ -372,8 +376,7 @@ async function handleAvatarUpload(options) {
     ElMessage.success('头像已更新')
     options.onSuccess?.(res)
   } catch (e) {
-    const msg = e && typeof e === 'object' && 'message' in e ? String(e.message) : '上传失败'
-    ElMessage.error(msg || '上传失败')
+    showCaughtError(e, '上传失败')
     options.onError?.(e)
   } finally {
     avatarUploading.value = false

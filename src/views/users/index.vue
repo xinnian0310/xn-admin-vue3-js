@@ -154,6 +154,7 @@ import XnImportDialog from '@/components/xnImport/xnImportDialog.vue'
 import UserSave from './save.vue'
 import { usePageUi } from '@/composables/usePageUi'
 import { list, batchRemove, remove, updateStatus, importUsers, exportUsers } from '@/api/user'
+import { showCaughtError } from '@/utils/request'
 import { getOptions as getRoleOptions } from '@/api/role'
 import { getTree as getUnitTree } from '@/api/unit'
 import { getOptions as getPostOptions } from '@/api/post'
@@ -351,7 +352,7 @@ async function handleExport() {
     })
     ElMessage.success('导出成功')
   } catch (e) {
-    ElMessage.error(e instanceof Error ? e.message : '导出失败')
+    showCaughtError(e, '导出失败')
   }
 }
 function inheritedRoles(row) {

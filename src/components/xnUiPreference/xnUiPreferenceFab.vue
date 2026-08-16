@@ -113,6 +113,7 @@ import { Setting } from '@element-plus/icons-vue'
 import { appConfig } from '@/config/app'
 import { useUiPreferenceStore } from '@/stores/uiPreference'
 import { parsePxInt, toPx } from '@/utils/px'
+import { showCaughtError } from '@/utils/request'
 const STORAGE_KEY = 'xn-ui-pref-fab-top'
 const FAB_HEIGHT = 48
 const DRAG_THRESHOLD = 4
@@ -243,7 +244,7 @@ async function onSave() {
     ElMessage.success('个人布局已保存')
     closeDrawer()
   } catch (err) {
-    ElMessage.error(err instanceof Error ? err.message : '保存失败')
+    showCaughtError(err, '保存失败')
   } finally {
     saving.value = false
   }
@@ -255,7 +256,7 @@ async function onReset() {
     syncFormFromApp()
     ElMessage.success('已恢复为通用配置')
   } catch (err) {
-    ElMessage.error(err instanceof Error ? err.message : '重置失败')
+    showCaughtError(err, '重置失败')
   } finally {
     resetting.value = false
   }

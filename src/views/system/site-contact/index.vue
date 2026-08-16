@@ -163,6 +163,7 @@ import xnAppIcon from '@/components/xnAppIcon/xnAppIcon.vue'
 import ContactSave from './contact-save.vue'
 import QrcodeSave from './qrcode-save.vue'
 import { getSiteContact, updateSiteContact } from '@/api/site-contact'
+import { showCaughtError } from '@/utils/request'
 import { contactTypeLabel, isQqContact, resolveContactType } from '@/types/site-contact'
 defineOptions({ name: 'SystemSiteContact' })
 /** 联系/捐赠项数量固定，仅支持编辑与查看 */
@@ -304,7 +305,7 @@ async function loadConfig() {
     const res = await getSiteContact()
     applyConfig(res.data)
   } catch (e) {
-    ElMessage.error(e?.message || '加载失败')
+    showCaughtError(e, '加载失败')
   } finally {
     loading.value = false
   }
@@ -316,7 +317,7 @@ async function persist(payload, successMsg) {
     applyConfig(res.data)
     ElMessage.success(successMsg)
   } catch (e) {
-    ElMessage.error(e?.message || '操作失败')
+    showCaughtError(e, '操作失败')
     await loadConfig()
   } finally {
     loading.value = false

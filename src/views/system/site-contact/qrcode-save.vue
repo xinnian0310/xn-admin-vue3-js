@@ -58,6 +58,7 @@ import { computed, reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import { Plus } from '@element-plus/icons-vue'
 import { uploadDonationQrcode } from '@/api/site-contact'
+import { showCaughtError } from '@/utils/request'
 import { saveDialogTitle } from '@/types/save'
 defineOptions({ name: 'SiteDonationQrSave' })
 const emit = defineEmits(['success'])
@@ -134,7 +135,7 @@ async function handleUpload(opt) {
   } catch (e) {
     form.src = ''
     fileList.value = []
-    ElMessage.error(e?.message || '上传失败')
+    showCaughtError(e, '上传失败')
     opt.onError?.(e)
   } finally {
     uploading.value = false

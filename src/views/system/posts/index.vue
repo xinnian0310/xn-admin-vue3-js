@@ -85,6 +85,7 @@ import XnImportDialog from '@/components/xnImport/xnImportDialog.vue'
 import PostSave from './save.vue'
 import { usePageUi } from '@/composables/usePageUi'
 import { batchRemove, exportPosts, importPosts, list, remove } from '@/api/post'
+import { showCaughtError } from '@/utils/request'
 defineOptions({ name: 'SystemPosts' })
 const { searchItems, buttonItems, tableButtonItems } = usePageUi('/system/posts')
 const saveRef = ref()
@@ -165,7 +166,7 @@ async function buttonClick(action) {
       })
       ElMessage.success('导出成功')
     } catch (e) {
-      ElMessage.error(e instanceof Error ? e.message : '导出失败')
+      showCaughtError(e, '导出失败')
     }
   } else if (action === 'edit' && selected.value.length === 1)
     openSave('edit', selected.value[0].id)
