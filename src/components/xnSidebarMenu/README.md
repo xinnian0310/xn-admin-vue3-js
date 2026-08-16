@@ -2,6 +2,10 @@
 
 多级侧边/顶栏菜单。由 `xnSidebarMenu` 渲染 `el-menu`，`xnSidebarMenuItem` 递归展开子项。
 
+## 介绍
+
+默认读 `menuStore.menus`（后端 `/api/auth/menus`）。`mode` 为 `vertical`（侧栏）或 `horizontal`（顶栏）。隐藏项会被过滤；图标走 `xnAppIcon`。激活路径取自 `route.meta.activeMenu`，或去掉 `/save…` 后缀的当前 path。
+
 ## 文件
 
 | 文件                    | 说明                  |

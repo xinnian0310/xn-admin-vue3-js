@@ -1,6 +1,18 @@
 # xnAppIcon
 
-统一图标渲染组件，支持 Element Plus 图标、Iconify、本地 SVG。
+统一图标渲染组件，支持 Element Plus 图标、Iconify、本地 SVG。菜单、按钮、路由管理、图标选择器都走这一套解析。
+
+## 介绍
+
+`name` 经 `@/utils/icons` 的 `parseIcon` 识别类型：
+
+| 写法 | 类型 | 示例 |
+| --- | --- | --- |
+| Element 组件名 | Element Plus | `Setting`、`User` |
+| 含 `:` | Iconify | `mdi:home` |
+| `svg:` 前缀 | 本地 SVG | `svg:my-icon` |
+
+无法解析或 `name` 为空时不渲染。
 
 ## 文件
 

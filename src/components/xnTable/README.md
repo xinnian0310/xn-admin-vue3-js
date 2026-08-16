@@ -2,6 +2,10 @@
 
 配置驱动表格：支持 **data 模式**（外部数据）与 **api 模式**（按模块名加载 CRUD API）。内置列类型、分页、列设置、保存弹窗与删除流程。
 
+## 介绍
+
+多数业务页用 data 模式：页面自己拉数，把 `data` / `total` / `loading` 传进来。`api` 模式按模块名加载 `@/api/{api}.ts` 的 CRUD。设置 `tableKey` 后底部分页出现「列设置」，配置写入 `/api/table-columns`。
+
 ## 文件
 
 | 文件                        | 说明                     |
@@ -18,7 +22,7 @@
 | 名称                          | 类型                         | 默认值              | 说明                            |
 | ----------------------------- | ---------------------------- | ------------------- | ------------------------------- |
 | `data`                        | `unknown[]`                  | —                   | 数据模式；与 `api` 二选一       |
-| `api`                         | `string`                     | —                   | API 模式，对应 `@/api/{api}.js` |
+| `api`                         | `string`                     | —                   | API 模式，对应 `@/api/{api}.ts` |
 | `columns`                     | `TableColumnItem[]`          | `[]`                | 列配置                          |
 | `loading`                     | `boolean`                    | `false`             | 数据模式加载态                  |
 | `tableHeight`                 | `string \| number`           | `'100%'`            | 表格高度                        |

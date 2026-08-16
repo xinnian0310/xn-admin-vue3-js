@@ -2,6 +2,10 @@
 
 配置驱动的行内搜索表单。支持字段溢出折叠，以及查询 / 重置。
 
+## 介绍
+
+`searchItem` 通常来自 `usePageUi(routePath).searchItems`（后端 page-ui）。查询时会剥离空值再抛出 `queryForm`。窗口变窄时自动折叠多余字段。
+
 ## 文件
 
 | 文件           | 说明     |

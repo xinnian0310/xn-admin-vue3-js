@@ -2,6 +2,10 @@
 
 主题设置对话框：预设主题、浅色/深色外观、自定义配色与主内容区背景图。
 
+## 介绍
+
+无 Props。显隐由 `themeStore.dialogVisible` 控制。背景图限制约 800KB，以 data URL 存本地。布局中挂载 `<xnThemeDialog />`，顶栏入口调用 `themeStore.openDialog()`。
+
 ## 文件
 
 | 文件                | 说明         |

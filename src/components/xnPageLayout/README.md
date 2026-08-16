@@ -1,6 +1,10 @@
 # xnPageLayout
 
-后台列表页骨架：可选左侧树、搜索区、工具栏、表格/卡片切换、分页。
+后台列表页骨架：可选左侧树、搜索区、工具栏、表格/卡片切换、分页。绝大多数 CRUD 列表页都包一层本组件。
+
+## 介绍
+
+插槽拼出标准后台页。有 `#aside` 时左右分栏。同时提供 `#table` 与 `#card` 且 `showViewSwitch` 为真时才显示切换；模式可写入 `localStorage`（键 `xn-view-mode:{route.path}`）。
 
 ## 文件
 

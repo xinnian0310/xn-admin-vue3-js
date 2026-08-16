@@ -2,63 +2,64 @@
 
 大文件上传组件：算指纹 → 秒传/续传探测 → 并发传分片（失败指数退避重试）→ 服务端合并。小于阈值的文件自动走单请求直传，调用方无需区分。
 
+## 介绍
+
+文件管理、公告/站内信附件、富文本插图都走这一套。核心逻辑在 `@/utils/upload`，与 UI 框架无关。权限码 `file:upload`。
+
 ## 文件
 
 | 文件           | 说明                          |
 | -------------- | ----------------------------- |
-| `xnUpload.vue` | 上传组件（组件名 `xnUpload`） |
+| `xnUpload.vue` | 上传组件（组件名 `XnUpload`） |
 
 逻辑主体在 `@/utils/upload`（与框架无关，可单独复用）：
 
 | 文件                | 说明                                           |
 | ------------------- | ---------------------------------------------- |
-| `upload-manager.js` | 多文件队列与文件级并发                         |
-| `upload-task.js`    | 单文件状态机：指纹、探测、分片队列、重试、合并 |
-| `hash.worker.js`    | Web Worker 里算指纹，避免大文件卡住主线程      |
-| `hash-core.js`      | 分块读取 + 增量摘要，10GB 文件也不会把内存打满 |
-| `sha256.js`         | 增量 SHA-256，用于全量摘要与非安全上下文兜底   |
-| `format.js`         | 体积/速度/剩余时间格式化与文件校验             |
+| `upload-manager.ts` | 多文件队列与文件级并发                         |
+| `upload-task.ts`    | 单文件状态机：指纹、探测、分片队列、重试、合并 |
+| `hash.worker.ts`    | Web Worker 里算指纹，避免大文件卡住主线程      |
+| `hash-core.ts`      | 分块读取 + 增量摘要，10GB 文件也不会把内存打满 |
+| `sha256.ts`         | 增量 SHA-256，用于全量摘要与非安全上下文兜底   |
+| `format.ts`         | 体积/速度/剩余时间格式化与文件校验             |
 
 ## Props
 
-| 名称              | 类型      | 默认值          | 说明                                    |
-| ----------------- | --------- | --------------- | --------------------------------------- |
-| `chunkSize`       | `Number`  | `8 * 1024²`     | 分片大小，MinIO 要求除末片外 ≥ 5MiB     |
-| `concurrency`     | `Number`  | `3`             | 单文件内同时上传的分片数                |
-| `fileConcurrency` | `Number`  | `3`             | 同时上传的文件数                        |
-| `maxRetries`      | `Number`  | `3`             | 单片自动重试次数（不含首次）            |
-| `retryDelay`      | `Number`  | `1000`          | 首次重试等待毫秒数，后续指数退避 + 抖动 |
-| `chunkTimeout`    | `Number`  | `300000`        | 单片请求超时毫秒数，`0` 不限制          |
-| `sliceThreshold`  | `Number`  | `50 * 1024²`    | 小于此值直传                            |
-| `enableSlice`     | `Boolean` | `true`          | 关闭后一律直传                          |
-| `enableResume`    | `Boolean` | `true`          | 断点续传，跳过服务端已有分片            |
-| `enableInstant`   | `Boolean` | `true`          | 秒传探测                                |
-| `enableHash`      | `Boolean` | `true`          | 关闭后不读内容算指纹，秒传随之失效      |
-| `hashAlgo`        | `String`  | `'sha256-tree'` | 见下方「指纹算法」                      |
-| `verifyChunkHash` | `Boolean` | `true`          | 随分片提交摘要，由服务端校验完整性      |
-| `maxSize`         | `Number`  | `10 * 1024³`    | 单文件大小上限，`0` 不限                |
-| `minSize`         | `Number`  | `0`             | 单文件大小下限                          |
-| `accept`          | `Array`   | `[]`            | 支持 `.mp4` / `video/mp4` / `video/*`   |
-| `limit`           | `Number`  | `0`             | 文件数量上限，`0` 不限                  |
-| `multiple`        | `Boolean` | `true`          | 允许多选                                |
-| `autoUpload`      | `Boolean` | `true`          | 选择后立即开始                          |
-| `drag`            | `Boolean` | `true`          | 展示拖拽区，`false` 时只给一个选择按钮  |
-| `showFileList`    | `Boolean` | `true`          | 展示文件列表与分片进度                  |
-| `disabled`        | `Boolean` | `false`         | 禁用                                    |
+| 名称              | 类型                        | 默认值          | 说明                                    |
+| ----------------- | --------------------------- | --------------- | --------------------------------------- |
+| `chunkSize`       | `number`                    | `8 * 1024²`     | 分片大小，MinIO 要求除末片外 ≥ 5MiB     |
+| `concurrency`     | `number`                    | `3`             | 单文件内同时上传的分片数                |
+| `fileConcurrency` | `number`                    | `3`             | 同时上传的文件数                        |
+| `maxRetries`      | `number`                    | `3`             | 单片自动重试次数（不含首次）            |
+| `retryDelay`      | `number`                    | `1000`          | 首次重试等待毫秒数，后续指数退避 + 抖动 |
+| `chunkTimeout`    | `number`                    | `300000`        | 单片请求超时毫秒数，`0` 不限制          |
+| `sliceThreshold`  | `number`                    | `50 * 1024²`    | 小于此值直传                            |
+| `enableSlice`     | `boolean`                   | `true`          | 关闭后一律直传                          |
+| `enableResume`    | `boolean`                   | `true`          | 断点续传，跳过服务端已有分片            |
+| `enableInstant`   | `boolean`                   | `true`          | 秒传探测                                |
+| `enableHash`      | `boolean`                   | `true`          | 关闭后不读内容算指纹，秒传随之失效      |
+| `hashAlgo`        | `'sha256-tree' \| 'sha256'` | `'sha256-tree'` | 见下方「指纹算法」                      |
+| `verifyChunkHash` | `boolean`                   | `true`          | 随分片提交摘要，由服务端校验完整性      |
+| `maxSize`         | `number`                    | `10 * 1024³`    | 单文件大小上限，`0` 不限                |
+| `minSize`         | `number`                    | `0`             | 单文件大小下限                          |
+| `accept`          | `string[]`                  | `[]`            | 支持 `.mp4` / `video/mp4` / `video/*`   |
+| `limit`           | `number`                    | `0`             | 文件数量上限，`0` 不限                  |
+| `multiple`        | `boolean`                   | `true`          | 允许多选                                |
+| `autoUpload`      | `boolean`                   | `true`          | 选择后立即开始                          |
+| `drag`            | `boolean`                   | `true`          | 展示拖拽区，`false` 时只给一个选择按钮  |
+| `showFileList`    | `boolean`                   | `true`          | 展示文件列表与分片进度                  |
+| `disabled`        | `boolean`                   | `false`         | 禁用                                    |
 
 ## Emits
 
-| 事件       | 载荷              | 说明                      |
-| ---------- | ----------------- | ------------------------- |
-| `change`   | `tasks`           | 队列快照，任一变化都触发  |
-| `progress` | `task`            | 上传中节流触发            |
-| `success`  | `(file, task)`    | 单文件完成                |
-| `error`    | `(message, task)` | 单文件失败（已耗尽重试）  |
-| `exceed`   | `File[]`          | 超出 `limit` 被丢弃的文件 |
-| `invalid`  | `(message, file)` | 未通过大小/类型校验       |
-
-任务快照字段：`id` `name` `size` `status` `percent` `loaded` `speed` `remainingTime`
-`hashPercent` `instant` `totalChunks` `uploadedChunks` `chunks` `direct` `uploadId` `error` `result`。
+| 事件       | 载荷                            | 说明                      |
+| ---------- | ------------------------------- | ------------------------- |
+| `change`   | `UploadTaskSnapshot[]`          | 队列快照，任一变化都触发  |
+| `progress` | `UploadTaskSnapshot`            | 上传中节流触发            |
+| `success`  | `(file: FileInfo, task: 快照)`  | 单文件完成                |
+| `error`    | `(message: string, task: 快照)` | 单文件失败（已耗尽重试）  |
+| `exceed`   | `File[]`                        | 超出 `limit` 被丢弃的文件 |
+| `invalid`  | `(message: string, file: File)` | 未通过大小/类型校验       |
 
 ## Expose
 
@@ -95,7 +96,7 @@
 ## 用法
 
 ```vue
-<xnUpload
+<XnUpload
   :chunk-size="8 * 1024 * 1024"
   :concurrency="3"
   :max-retries="3"
@@ -106,8 +107,8 @@
 />
 ```
 
-```js
-function handleSuccess(file) {
+```ts
+function handleSuccess(file: FileInfo) {
   console.log(file.url)
 }
 ```
@@ -115,11 +116,11 @@ function handleSuccess(file) {
 表单里的多附件字段（公告管理 / 站内信即此用法）：成功后把 `{ name, path }` 推进列表并把队列清空，避免和已保存附件重复展示。
 
 ```vue
-<xnUpload ref="uploaderRef" :limit="remainingSlots" @success="handleUploaded" />
+<XnUpload ref="uploaderRef" :limit="remainingSlots" @success="handleUploaded" />
 ```
 
-```js
-function handleUploaded(file) {
+```ts
+function handleUploaded(file: FileInfo) {
   form.attachments.push({ name: file.name, path: file.path })
   uploaderRef.value?.clearSettled()
 }
@@ -127,7 +128,7 @@ function handleUploaded(file) {
 
 不需要界面时也可以直接用核心库：
 
-```js
+```ts
 import { UploadManager, DEFAULT_UPLOADER_OPTIONS } from '@/utils/upload'
 
 const manager = new UploadManager({ ...DEFAULT_UPLOADER_OPTIONS, concurrency: 5 })

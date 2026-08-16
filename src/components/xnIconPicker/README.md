@@ -1,6 +1,10 @@
 # xnIconPicker
 
-图标选择表单控件。通过 Popover 从 Element Plus / Iconify 预设 / 本地 SVG 中挑选，支持 `v-model`。
+图标选择表单控件。通过 Popover 从 Element Plus / Iconify 预设 / 本地 SVG 中挑选，支持 `v-model`。路由管理、权限内容等「选图标」字段用它。
+
+## 介绍
+
+三个 Tab：Element、Iconify、SVG。Element 最多匹配展示 200 项；Iconify 自由输入须含 `:`（如 `mdi:home`）；选中值交给 `xnAppIcon` 渲染。点击外部关闭。
 
 ## 文件
 
