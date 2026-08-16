@@ -10,12 +10,23 @@ function browseFiles(prefix, keyword) {
 function fetchFileTree() {
   return request.get('/files/tree')
 }
-function uploadFile(file, prefix) {
+/**
+ * 单请求直传。
+ *
+ * @param {File} file 待上传文件
+ * @param {string} [prefix] 目标目录前缀
+ * @param {{ signal?: AbortSignal, onProgress?: (loaded: number) => void, timeout?: number, silentError?: boolean }} [options]
+ */
+function uploadFile(file, prefix, options) {
   const form = new FormData()
   form.append('file', file)
   if (prefix) form.append('prefix', prefix)
   return request.post('/files/upload', form, {
     headers: { 'Content-Type': 'multipart/form-data' },
+    signal: options?.signal,
+    timeout: options?.timeout,
+    silentError: options?.silentError,
+    onUploadProgress: options?.onProgress ? (event) => options.onProgress?.(event.loaded) : void 0,
   })
 }
 function createFileDir(path) {

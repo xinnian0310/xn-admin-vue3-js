@@ -1,5 +1,5 @@
 <template>
-  <div class="rich-editor" :class="{ 'is-disabled': disabled }">
+  <div class="rich-editor xn-rich-editor" :class="{ 'is-disabled': disabled }">
     <Toolbar
       v-if="!disabled"
       class="rich-editor__toolbar"
@@ -22,6 +22,14 @@
 import { computed, onBeforeUnmount, shallowRef } from 'vue'
 import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
 import '@wangeditor/editor/dist/css/style.css'
+import 'katex/dist/katex.min.css'
+import {
+  createMentionConfig,
+  createRichEditorConfig,
+  createRichToolbarConfig,
+} from '@/utils/rich-editor'
+import '@/utils/rich-editor/styles.css'
+
 const props = defineProps({
   modelValue: { type: String, required: false, default: '' },
   disabled: { type: Boolean, required: false, default: false },
@@ -30,21 +38,24 @@ const props = defineProps({
 })
 const emit = defineEmits(['update:modelValue'])
 const editorRef = shallowRef()
+const mention = createMentionConfig()
+const toolbarConfig = createRichToolbarConfig()
 const valueHtml = computed({
   get: () => props.modelValue || '',
   set: (val) => emit('update:modelValue', val),
 })
-const toolbarConfig = {
-  excludeKeys: ['uploadVideo', 'insertVideo', 'group-video'],
-}
-const editorConfig = computed(() => ({
-  placeholder: props.placeholder,
-  readOnly: props.disabled,
-}))
+const editorConfig = computed(() =>
+  createRichEditorConfig({
+    placeholder: props.placeholder,
+    readOnly: props.disabled,
+    mention,
+  }),
+)
 function handleCreated(editor) {
   editorRef.value = editor
 }
 onBeforeUnmount(() => {
+  mention.dispose()
   const editor = editorRef.value
   if (editor == null) return
   editor.destroy()

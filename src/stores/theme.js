@@ -87,6 +87,7 @@ const useThemeStore = defineStore('theme', () => {
       appearance: effectiveAppearance.value,
       // 底图只在个性化下生效
       mainBgImage: source.value === 'custom' ? mainBgImage.value : null,
+      source: source.value,
     })
   }
   function setTheme(id) {

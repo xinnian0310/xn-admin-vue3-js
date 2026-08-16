@@ -134,7 +134,12 @@
         <el-input :model-value="selectedRoute?.title" disabled />
       </el-form-item>
       <el-form-item label="权限类型">
-        <el-tag :type="typeTagType(form.type)">{{ typeLabel(form.type) }}</el-tag>
+        <el-radio-group v-if="!isEdit" v-model="form.type" @change="onTypeChange">
+          <el-radio-button v-for="tab in tabs" :key="tab.type" :value="tab.type">
+            {{ tab.label }}
+          </el-radio-button>
+        </el-radio-group>
+        <el-tag v-else :type="typeTagType(form.type)">{{ typeLabel(form.type) }}</el-tag>
       </el-form-item>
       <el-form-item label="名称" prop="name">
         <el-input
@@ -400,6 +405,19 @@ function syncCodeFromForm() {
   if (isEdit.value) return
   form.value.code = buildAutoCode()
 }
+/** 当前菜单下指定类型的下一个排序（max + 1，至少为 1） */
+function nextSort(type) {
+  const list = groups.value[type] ?? []
+  if (!list.length) return 1
+  return Math.max(...list.map((item) => item.sort ?? 0)) + 1
+}
+
+/** 切换类型后按钮/接口字段互斥，清掉上一类型残留的校验提示 */
+function onTypeChange() {
+  formRef.value?.clearValidate(['action', 'method', 'path'])
+  if (!isEdit.value) form.value.sort = nextSort(form.value.type)
+  syncCodeFromForm()
+}
 function onNameChange() {
   if (isEdit.value || !isButtonType.value || form.value.action) return
   const name = form.value.name.trim()
@@ -548,7 +566,12 @@ function openCreate(type) {
   if (!selectedMenu.value) return
   isEdit.value = false
   editingRow.value = null
-  form.value = { ...emptyForm(), type, parentId: selectedMenu.value.id }
+  form.value = {
+    ...emptyForm(),
+    type,
+    parentId: selectedMenu.value.id,
+    sort: nextSort(type),
+  }
   dialogVisible.value = true
   nextTick(() => syncCodeFromForm())
 }
@@ -620,6 +643,7 @@ async function handleSubmit() {
     } else {
       await create(payload)
       ElMessage.success('新增成功')
+      activeType.value = payload.type
     }
     dialogVisible.value = false
     await loadData(true)

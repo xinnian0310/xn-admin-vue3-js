@@ -33,7 +33,7 @@ const defaultAppConfig = {
   },
   ui: {
     dialog: {
-      maxHeight: '95vh',
+      maxHeight: '80vh',
     },
     layout: {
       mode: 'side',
@@ -85,11 +85,9 @@ const defaultAppConfig = {
     },
   },
   storage: {
-    minio: {
-      endpoint: '',
-      bucket: '',
-      region: '',
-    },
+    minio: 'http://127.0.0.1:9000/xn-admin/',
+    /** kkFileView 5.0 预览服务根地址 */
+    kkFileView: 'http://127.0.0.1:8012/',
   },
   logRetention: {
     loginDays: 90,
@@ -134,7 +132,18 @@ function deepMergeAppConfig(target, remote) {
 }
 function applyRemoteAppConfig(remote) {
   if (!remote) return
-  deepMergeAppConfig(appConfig, remote)
+  const remoteStorage = remote.storage
+  const { storage: _ignored, ...rest } = remote
+  deepMergeAppConfig(appConfig, rest)
+  if (remoteStorage && typeof remoteStorage === 'object' && !Array.isArray(remoteStorage)) {
+    const entries = Object.entries(remoteStorage).filter(
+      ([k, v]) => !!k?.trim() && typeof v === 'string' && !!v.trim(),
+    )
+    if (entries.length > 0) {
+      for (const key of Object.keys(appConfig.storage)) delete appConfig.storage[key]
+      for (const [k, v] of entries) appConfig.storage[k.trim()] = v.trim()
+    }
+  }
   const app = remote.app
   if (app) {
     if ('logoWidth' in app) appConfig.app.logoWidth = app.logoWidth ?? null
@@ -143,6 +152,31 @@ function applyRemoteAppConfig(remote) {
   // 运行时只用投影后的 name/intro，不保留云端 clients 映射
   delete appConfig.app.clients
   applyAppConfig(appConfig)
+}
+function resolveStorageBase(name = 'minio') {
+  const fromRemote = appConfig.storage?.[name]?.trim()
+  if (fromRemote) return fromRemote.endsWith('/') ? fromRemote : `${fromRemote}/`
+  const fallback = defaultAppConfig.storage[name] || ''
+  if (!fallback) return ''
+  return fallback.endsWith('/') ? fallback : `${fallback}/`
+}
+function resolveStorageUrl(objectPath, storageName = 'minio') {
+  const base = resolveStorageBase(storageName)
+  const rel = (objectPath || '').replace(/^\/+/, '')
+  if (!base) return rel
+  return `${base}${rel}`
+}
+/**
+ * 业务附件访问地址：优先远程连接配置 storage.minio；
+ * 已是绝对地址或 /uploads 路径时原样返回；再兜底本地 uploads。
+ */
+function resolveAttachmentUrl(filePath, storageName = 'minio') {
+  const path = (filePath || '').trim()
+  if (!path) return ''
+  if (/^https?:\/\//i.test(path) || path.startsWith('/')) return path
+  const remote = resolveStorageUrl(path, storageName)
+  if (remote && /^https?:\/\//i.test(remote)) return remote
+  return `/uploads/${path.replace(/^\/+/, '')}`
 }
 let globalUiBaseline = null
 function captureGlobalUiBaseline(config = appConfig) {
@@ -246,6 +280,7 @@ function applyAppConfig(config = appConfig) {
   applyLayoutTheme(active.colors, {
     appearance: source === 'appearance' ? appearance : 'light',
     mainBgImage: source === 'custom' ? mainBgImage : null,
+    source,
   })
 }
 function applyLayoutTheme(colors, options = {}) {
@@ -325,6 +360,15 @@ function applyLayoutTheme(colors, options = {}) {
     root.style.setProperty('--app-surface-soft-border', scale['light-5'])
     root.style.setProperty('--app-card-hover-border', mixHex(colors.primary, '#ffffff', 0.45))
   }
+  // 页签选中态：预设 / 个性化用实心主色；外观模式跟随侧栏强调色（更贴合亮 / 暗观感）
+  if (options.source === 'appearance') {
+    root.style.setProperty('--app-tags-item-active-bg', colors.sidebar.activeBg)
+    root.style.setProperty('--app-tags-item-active-text', colors.sidebar.active)
+    root.style.setProperty('--app-tags-item-active-border', colors.sidebar.active)
+  } else {
+    root.style.setProperty('--app-tags-item-active-border', scale.primary)
+  }
+
   if (mainBgImage) {
     root.style.setProperty('--app-main-bg-image', `url("${mainBgImage}")`)
   } else {
@@ -341,4 +385,7 @@ export {
   deepMergeAppConfig,
   defaultAppConfig,
   getElementPlusProviderProps,
+  resolveAttachmentUrl,
+  resolveStorageBase,
+  resolveStorageUrl,
 }

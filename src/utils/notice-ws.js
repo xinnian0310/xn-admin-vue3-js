@@ -1,4 +1,9 @@
 import { useUserStore } from '@/stores/user'
+import {
+  FORCE_LOGOUT_CLOSE_CODE,
+  FORCE_LOGOUT_MESSAGE_TYPE,
+  handleForceLogout,
+} from '@/utils/force-logout'
 let socket = null
 let heartbeatTimer
 let reconnectTimer
@@ -52,16 +57,29 @@ function connectNoticeWs() {
     startHeartbeat()
   }
   socket.onmessage = (event) => {
+    let data
     try {
-      const data = JSON.parse(String(event.data))
-      handlers.forEach((handler) => handler(data))
+      data = JSON.parse(String(event.data))
     } catch {
       // ignore malformed WS payloads
+      return
     }
+    if (data.type === FORCE_LOGOUT_MESSAGE_TYPE) {
+      // 必须同步置位，否则紧随其后的 onclose 会把连接重连回来
+      manualClose = true
+      handleForceLogout(data.message)
+      return
+    }
+    handlers.forEach((handler) => handler(data))
   }
-  socket.onclose = () => {
+  socket.onclose = (event) => {
     clearTimers()
     socket = null
+    if (event.code === FORCE_LOGOUT_CLOSE_CODE) {
+      manualClose = true
+      handleForceLogout()
+      return
+    }
     scheduleReconnect()
   }
   socket.onerror = () => {

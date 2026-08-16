@@ -9,34 +9,6 @@
     @closed="themeStore.closeDialog()"
   >
     <el-tabs v-model="activeTab" class="theme-tabs">
-      <el-tab-pane label="预设主题" name="preset">
-        <p class="theme-tab__hint">独立完整主题：一键切换侧栏、顶栏、主色与页面配色。</p>
-        <div class="theme-dialog__grid">
-          <button
-            v-for="item in themeStore.themes"
-            :key="item.id"
-            type="button"
-            class="theme-card"
-            :class="{
-              'is-active': themeStore.source === 'preset' && item.id === themeStore.themeId,
-            }"
-            @click="themeStore.setTheme(item.id)"
-          >
-            <div class="theme-card__swatches">
-              <span class="theme-card__swatch" :style="{ background: item.swatches[0] }" />
-              <span class="theme-card__swatch" :style="{ background: item.colors.primary }" />
-            </div>
-            <div class="theme-card__name">{{ item.name }}</div>
-            <el-icon
-              v-if="themeStore.source === 'preset' && item.id === themeStore.themeId"
-              class="theme-card__check"
-            >
-              <Check />
-            </el-icon>
-          </button>
-        </div>
-      </el-tab-pane>
-
       <el-tab-pane label="外观模式" name="appearance">
         <p class="theme-tab__hint">
           独立完整主题：亮色 / 暗色整站切换（侧栏、顶栏、内容区一并修改）。
@@ -89,6 +61,34 @@
             </div>
             <el-icon
               v-if="themeStore.source === 'appearance' && themeStore.appearance === 'dark'"
+              class="theme-card__check"
+            >
+              <Check />
+            </el-icon>
+          </button>
+        </div>
+      </el-tab-pane>
+
+      <el-tab-pane label="预设主题" name="preset">
+        <p class="theme-tab__hint">独立完整主题：一键切换侧栏、顶栏、主色与页面配色。</p>
+        <div class="theme-dialog__grid">
+          <button
+            v-for="item in themeStore.themes"
+            :key="item.id"
+            type="button"
+            class="theme-card"
+            :class="{
+              'is-active': themeStore.source === 'preset' && item.id === themeStore.themeId,
+            }"
+            @click="themeStore.setTheme(item.id)"
+          >
+            <div class="theme-card__swatches">
+              <span class="theme-card__swatch" :style="{ background: item.swatches[0] }" />
+              <span class="theme-card__swatch" :style="{ background: item.colors.primary }" />
+            </div>
+            <div class="theme-card__name">{{ item.name }}</div>
+            <el-icon
+              v-if="themeStore.source === 'preset' && item.id === themeStore.themeId"
               class="theme-card__check"
             >
               <Check />

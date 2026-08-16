@@ -1,7 +1,7 @@
 import { hexToRgbCss, isLightColor, mixHex } from '@/utils/color'
 
 const CUSTOM_THEME_ID = 'custom'
-const DEFAULT_THEME_SOURCE = 'preset'
+const DEFAULT_THEME_SOURCE = 'appearance'
 const DEFAULT_THEME_ID = 'blue'
 
 const DEFAULT_CUSTOM_PARTS = {
@@ -75,11 +75,25 @@ const appearanceThemes = {
   light: {
     id: 'appearance-light',
     name: '亮色',
-    swatches: ['#d9ecff', mixHex('#d9ecff', '#ffffff', 0.12)],
+    swatches: ['#ffffff', '#f5f5f5'],
     colors: {
       primary: '#409eff',
-      sidebar: softSider('#409eff', '#d9ecff'),
-      header: liftHeader('#d9ecff', 0.12),
+      sidebar: {
+        bg: '#ffffff',
+        bgElevated: '#fafafa',
+        text: 'rgba(0, 0, 0, 0.65)',
+        textActive: 'rgba(0, 0, 0, 0.88)',
+        active: '#409eff',
+        activeBg: '#ecf5ff',
+        hoverBg: 'rgba(0, 0, 0, 0.04)',
+        border: '#f0f0f0',
+        railBg: '#fafafa',
+      },
+      header: {
+        bg: '#ffffff',
+        text: 'rgba(0, 0, 0, 0.88)',
+        border: '#f0f0f0',
+      },
     },
   },
   dark: {

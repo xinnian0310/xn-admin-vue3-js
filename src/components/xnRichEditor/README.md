@@ -1,12 +1,18 @@
 # xnRichEditor
 
-基于 wangEditor 的富文本编辑器封装，`v-model` 绑定 HTML 字符串；已排除视频相关工具。
+基于 wangEditor 的富文本编辑器封装，`v-model` 绑定 HTML 字符串。
+
+图片 / 视频 / 附件上传走项目 `UploadManager`（与 XnUpload 同一套：秒传、分片、续传）。工具栏保留 `uploadVideo` / `insertVideo` / `group-video`。
+
+已注册官方插件：Markdown、公式、@提及、上传附件、链接卡片、Ctrl+Enter 换行。
 
 ## 文件
 
 | 文件               | 说明         |
 | ------------------ | ------------ |
 | `xnRichEditor.vue` | 富文本编辑器 |
+
+逻辑在 `@/utils/rich-editor`。
 
 ## Props
 
@@ -27,11 +33,19 @@
 
 - `@wangeditor/editor`
 - `@wangeditor/editor-for-vue`
+- `@wangeditor/plugin-md`
+- `@wangeditor/plugin-formula` + `katex`
+- `@wangeditor/plugin-mention`
+- `@wangeditor/plugin-upload-attachment`
+- `@wangeditor/plugin-link-card`
+- `@wangeditor/plugin-ctrl-enter`
 
 ## 用法
 
 ```vue
 <xnRichEditor v-model="form.content" height="400px" />
 ```
+
+只读页展示请用 `decorateRichHtml`，否则公式节点是空 span。
 
 组件卸载时会销毁编辑器实例。

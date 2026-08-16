@@ -1,8 +1,14 @@
 import axios from 'axios'
 import { ElMessage } from 'element-plus'
-import router from '@/router'
 import { isApiRegistered, isRegistryLoaded, isWhitelisted } from '@/utils/api-guard'
 import { normalizeDateTimes } from '@/utils/datetime'
+import { handleForceLogout } from '@/utils/force-logout'
+/**
+ * 请求实例。
+ *
+ * 额外支持的自定义配置项：`silentError` 置 true 时不弹错误提示，仅把错误抛给调用方。
+ * 用于分片上传这类「失败即自动重试」的请求，避免重试过程刷屏；401 强制下线仍会正常触发。
+ */
 const request = axios.create({
   baseURL: '/api',
   timeout: 15e3,
@@ -123,7 +129,9 @@ request.interceptors.response.use(
   (response) => {
     const res = response.data
     if (res.code !== 200) {
-      showRequestError(res.message || '\u8BF7\u6C42\u5931\u8D25')
+      if (!response.config?.silentError) {
+        showRequestError(res.message || '\u8BF7\u6C42\u5931\u8D25')
+      }
       return Promise.reject(new Error(res.message || '\u8BF7\u6C42\u5931\u8D25'))
     }
     if (res.data !== void 0) {
@@ -138,12 +146,13 @@ request.interceptors.response.use(
       error.message = message
     }
     if (status === 401) {
-      void import('@/stores/user').then(({ useUserStore }) => {
-        useUserStore().logout(false)
-      })
-      router.push('/login')
+      // 由强制下线弹窗接管清理与跳转，这里不再叠加一条 toast
+      handleForceLogout(message)
+      return Promise.reject(error)
     }
-    showRequestError(message)
+    if (!error.config?.silentError) {
+      showRequestError(message)
+    }
     return Promise.reject(error)
   },
 )

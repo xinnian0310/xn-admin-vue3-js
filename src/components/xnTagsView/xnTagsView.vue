@@ -19,16 +19,17 @@
         placement="bottom-start"
         @command="(cmd) => onMenuCommand(cmd, tag)"
       >
-        <div
+        <el-tag
           class="tags-view__item"
           :class="{ 'is-active': isActive(tag) }"
+          :type="isActive(tag) ? 'primary' : 'info'"
+          :effect="isActive(tag) ? 'dark' : 'plain'"
+          :closable="!tag.affix"
           @click="handleClick(tag)"
+          @close="handleClose(tag)"
         >
-          <span class="tags-view__title">{{ tag.title }}</span>
-          <el-icon v-if="!tag.affix" class="tags-view__close" @click.stop="handleClose(tag)">
-            <Close />
-          </el-icon>
-        </div>
+          {{ tag.title }}
+        </el-tag>
         <template #dropdown>
           <el-dropdown-menu>
             <el-dropdown-item command="refresh" :icon="RefreshRight"> 刷新 </el-dropdown-item>
@@ -302,20 +303,23 @@ onBeforeUnmount(() => {
 }
 
 .tags-view__arrow:hover:not(:disabled) {
-  color: var(--app-color-primary);
-  background: var(--app-tags-item-hover-bg);
+  color: var(--el-color-primary);
+  background: var(--el-color-primary-light-9);
 }
 
 .tags-view__arrow:disabled {
-  color: #c0c4cc;
+  color: var(--el-text-color-disabled, #c0c4cc);
   cursor: not-allowed;
 }
 
 .tags-view__scroll {
   display: flex;
   flex: 1;
+  align-items: center;
+  gap: 8px;
   min-width: 0;
   height: 100%;
+  padding: 0 10px;
   overflow-x: auto;
   overflow-y: hidden;
   scrollbar-width: none;
@@ -328,54 +332,40 @@ onBeforeUnmount(() => {
 
 .tags-view__scroll :deep(.el-dropdown) {
   display: inline-flex;
-  height: 100%;
   flex-shrink: 0;
 }
 
-.tags-view__item {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  height: 100%;
-  padding: 0 12px;
-  background: var(--app-tags-item-bg);
-  color: var(--app-tags-item-text);
-  font-size: inherit;
+/* 带上 .tags-view__scroll 提权，压过 Element Plus 同权重的
+   .el-tag--dark / .el-tag--plain 规则，避免样式注入顺序影响结果 */
+.tags-view__scroll .tags-view__item {
   cursor: pointer;
-  white-space: nowrap;
-  border: none;
-  border-right: 1px solid var(--app-tags-border);
+  user-select: none;
+  border-radius: 4px;
   transition:
-    background 0.2s,
+    background-color 0.2s,
+    border-color 0.2s,
     color 0.2s;
-  outline: none;
 }
 
-.tags-view__item:hover {
-  background: var(--app-tags-item-hover-bg);
+/* 选中态：预设 / 个性化为实心主色，外观模式跟随侧栏强调色（由主题写入 --app-tags-item-active-*） */
+.tags-view__scroll .tags-view__item.is-active {
+  --el-tag-bg-color: var(--app-tags-item-active-bg);
+  --el-tag-border-color: var(--app-tags-item-active-border, var(--app-tags-item-active-bg));
+  --el-tag-text-color: var(--app-tags-item-active-text);
+  --el-tag-hover-color: var(--el-color-primary-light-3);
 }
 
-.tags-view__item.is-active {
-  background: var(--app-tags-item-active-bg);
-  color: var(--app-tags-item-active-text);
+/* 未选中保持中性，只跟亮 / 暗外观走 */
+.tags-view__scroll .tags-view__item:not(.is-active) {
+  --el-tag-bg-color: var(--app-tags-item-bg);
+  --el-tag-border-color: var(--app-tags-border);
+  --el-tag-text-color: var(--app-tags-item-text);
+  --el-tag-hover-color: var(--el-color-primary);
 }
 
-.tags-view__title {
-  line-height: 1;
-}
-
-.tags-view__close {
-  font-size: var(--app-font-size-main);
-  border-radius: 50%;
-  padding: 1px;
-}
-
-.tags-view__item:not(.is-active) .tags-view__close:hover {
-  color: var(--app-color-primary);
-  background: var(--app-color-primary-light-9);
-}
-
-.tags-view__item.is-active .tags-view__close:hover {
-  background: rgba(255, 255, 255, 0.2);
+.tags-view__scroll .tags-view__item:not(.is-active):hover {
+  --el-tag-bg-color: var(--el-color-primary-light-9);
+  --el-tag-border-color: var(--el-color-primary-light-5);
+  --el-tag-text-color: var(--el-color-primary);
 }
 </style>

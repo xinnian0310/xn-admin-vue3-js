@@ -186,6 +186,12 @@ const menus = [
             permission: 'menu:system:config',
           },
           {
+            id: 'remote-storage',
+            title: '远程连接配置',
+            path: '/system/remote-storage',
+            permission: 'menu:system:remote-storage',
+          },
+          {
             id: 'site-contact',
             title: '\u8054\u7CFB\u4E0E\u6350\u8D60',
             path: '/system/site-contact',

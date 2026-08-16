@@ -25,8 +25,20 @@ function getPublicConfig() {
 function getSystemConfig() {
   return request.get('/system-config')
 }
-function updateSystemConfig(data) {
-  return request.put('/system-config', data)
+/** 分区 → 独立接口路径，每个分区在后端各自一张表 */
+const SECTION_PATH = {
+  app: '/system-config/app',
+  session: '/system-config/session',
+  ui: '/system-config/ui',
+  storage: '/system-config/storage',
+  logRetention: '/system-config/log-retention',
+  sensitiveData: '/system-config/sensitive-data',
+}
+function getSystemConfigSection(section) {
+  return request.get(SECTION_PATH[section])
+}
+function updateSystemConfigSection(section, data) {
+  return request.put(SECTION_PATH[section], data)
 }
 function uploadBrandAsset(file) {
   const form = new FormData()
@@ -35,4 +47,10 @@ function uploadBrandAsset(file) {
     headers: { 'Content-Type': 'multipart/form-data' },
   })
 }
-export { getPublicConfig, getSystemConfig, updateSystemConfig, uploadBrandAsset }
+export {
+  getPublicConfig,
+  getSystemConfig,
+  getSystemConfigSection,
+  updateSystemConfigSection,
+  uploadBrandAsset,
+}

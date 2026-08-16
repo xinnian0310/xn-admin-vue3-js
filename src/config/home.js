@@ -1,5 +1,4 @@
-import wechatQr from '@/assets/payment-qrcode/wechat.jpg'
-import alipayQr from '@/assets/payment-qrcode/alipay.jpg'
+import donateQr from '@/assets/payment-qrcode/donate.png'
 const changelogTypeMeta = {
   feature: { label: '\u65B0\u589E', tag: 'success' },
   fix: { label: '\u4FEE\u590D', tag: 'warning' },
@@ -138,10 +137,7 @@ const homeConfig = {
   /** 本地兜底；线上优先走 GET /api/site-contact/public */
   donation: {
     tip: '\u5982\u679C\u8FD9\u4E2A\u9879\u76EE\u5BF9\u4F60\u6709\u5E2E\u52A9\uFF0C\u6B22\u8FCE\u8BF7\u4F5C\u8005\u559D\u676F\u5496\u5561 \u2615',
-    qrcodes: [
-      { label: '\u5FAE\u4FE1\u652F\u4ED8', src: wechatQr },
-      { label: '\u652F\u4ED8\u5B9D', src: alipayQr },
-    ],
+    qrcodes: [{ label: '', src: donateQr }],
   },
 }
 export { changelogTypeMeta, homeConfig }

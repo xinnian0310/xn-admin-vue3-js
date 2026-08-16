@@ -168,7 +168,6 @@ const canEditPassword = computed(() => true)
 const canEdit = computed(() => canEditProfile.value || canEditPassword.value)
 const profileFormDisabled = computed(() => !canEditProfile.value || !editing.value)
 const passwordFormDisabled = computed(() => !canEditPassword.value || !editing.value)
-const formDisabled = profileFormDisabled
 const user = computed(() => userStore.user)
 const forcePwd = computed(() => route.query.forcePwd === '1' || !!user.value?.mustChangePassword)
 const pwdRulesTip = computed(() => passwordRules.value?.tip || '')

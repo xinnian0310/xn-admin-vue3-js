@@ -158,7 +158,7 @@
           type="info"
           :closable="false"
           show-icon
-          title="将生成后端 CRUD + 前端标准列表页（xnPageLayout / xnSearch / xnButton / xnTable），打包 ZIP 下载；请按包内 README 拷贝到工程后重启。"
+          title="将生成后端 CRUD + 本工程（vue3-js）前端标准列表页，打包 ZIP 下载；按包内 README 拷贝到本仓库后重启。"
         />
       </el-form>
     </div>
