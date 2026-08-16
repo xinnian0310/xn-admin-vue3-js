@@ -339,6 +339,7 @@ onBeforeUnmount(() => {
    .el-tag--dark / .el-tag--plain 规则，避免样式注入顺序影响结果 */
 .tags-view__scroll .tags-view__item {
   cursor: pointer;
+  -webkit-user-select: none;
   user-select: none;
   border-radius: 4px;
   transition:

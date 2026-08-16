@@ -23,5 +23,25 @@
   },
   "[markdown]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
-  }
+  },
+  "[css]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[scss]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "json.schemas": [
+    {
+      "fileMatch": ["tsconfig.json", "tsconfig.*.json", "jsconfig.json"],
+      "url": "https://json.schemastore.org/tsconfig"
+    }
+  ],
+  "vscode-edge-devtools.webhint": false,
+  "css.lint.compatibleVendorPrefixes": "ignore",
+  "scss.lint.compatibleVendorPrefixes": "ignore",
+  "vetur.validation.template": false,
+  "vetur.validation.script": false,
+  "vetur.validation.style": false,
+  "vetur.validation.interpolation": false,
+  "vetur.experimental.templateInterpolationService": false
 }

@@ -285,6 +285,7 @@ async function onReset() {
     transform 0.2s ease,
     filter 0.15s ease;
   touch-action: none;
+  -webkit-user-select: none;
   user-select: none;
 }
 

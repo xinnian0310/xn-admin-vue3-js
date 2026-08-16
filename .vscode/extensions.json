@@ -4,5 +4,6 @@
     "esbenp.prettier-vscode",
     "Vue.volar",
     "EditorConfig.EditorConfig"
-  ]
+  ],
+  "unwantedRecommendations": ["octref.vetur", "ms-edgedevtools.vscode-edge-devtools"]
 }
