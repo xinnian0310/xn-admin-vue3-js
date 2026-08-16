@@ -146,7 +146,11 @@ class UploadTask {
       queueIndex: this.queueIndex,
       status: this.status,
       percent:
-        this.file.size > 0 ? round1((loaded / this.file.size) * 100) : this.status === 'success' ? 100 : 0,
+        this.file.size > 0
+          ? round1((loaded / this.file.size) * 100)
+          : this.status === 'success'
+            ? 100
+            : 0,
       loaded,
       speed,
       remainingTime: speed > 0 ? Math.round((this.file.size - loaded) / speed) : -1,

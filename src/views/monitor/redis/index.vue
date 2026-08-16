@@ -152,11 +152,9 @@ async function buttonClick(action) {
       ElMessage.warning('请至少选择一个 Key')
       return
     }
-    await ElMessageBox.confirm(
-      `确定删除选中的 ${selected.value.length} 个 Key 吗？`,
-      '删除确认',
-      { type: 'warning' },
-    )
+    await ElMessageBox.confirm(`确定删除选中的 ${selected.value.length} 个 Key 吗？`, '删除确认', {
+      type: 'warning',
+    })
     for (const row of selected.value) {
       await deleteRedisKey(row.key)
     }

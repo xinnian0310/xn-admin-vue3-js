@@ -165,9 +165,7 @@ const typePath = computed({
   },
 })
 
-const tipTitle = computed(() =>
-  form.type === 'LINK' ? '外部链接内嵌规则' : '路径与视图对应规则',
-)
+const tipTitle = computed(() => (form.type === 'LINK' ? '外部链接内嵌规则' : '路径与视图对应规则'))
 
 const tipDescription = computed(() => {
   if (form.type === 'LINK') {

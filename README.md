@@ -8,11 +8,11 @@
 
 ## 相关仓库
 
-| 仓库 | 说明 |
-|------|------|
-| `xn-admin-cloud` | 微服务后端（必需） |
-| `xn-admin-vue3-ts` | 功能基准（TypeScript） |
-| `xn-admin-vue2-js` / `xn-admin-react-ts` | 其它技术栈管理端 |
+| 仓库                                     | 说明                   |
+| ---------------------------------------- | ---------------------- |
+| `xn-admin-cloud`                         | 微服务后端（必需）     |
+| `xn-admin-vue3-ts`                       | 功能基准（TypeScript） |
+| `xn-admin-vue2-js` / `xn-admin-react-ts` | 其它技术栈管理端       |
 
 ## 前提
 
@@ -178,12 +178,12 @@ xnPageLayout
 
 后端 `xn-log` / `xn-job` 已提供登录 / 操作 / 异常 / 任务日志接口（查询、详情、删除、清空、导出），菜单与 page-ui 已种子。本仓库**尚未落地页面**（`view-loader` 会落到 404）：
 
-| 页面     | 路由                    | 前端现状                                      |
-| -------- | ----------------------- | --------------------------------------------- |
-| 登录日志 | `/system/logs/login`    | 有 `api/login-log`，无 `views/.../index.vue`  |
-| 操作日志 | `/system/logs/oper`     | 有 `api/oper-log`，无页面                     |
-| 异常日志 | `/system/logs/exception`| 有 `api/exception-log`，无页面                |
-| 任务日志 | `/system/jobs/logs`     | 定时任务页会跳转至此，无页面                  |
+| 页面     | 路由                     | 前端现状                                     |
+| -------- | ------------------------ | -------------------------------------------- |
+| 登录日志 | `/system/logs/login`     | 有 `api/login-log`，无 `views/.../index.vue` |
+| 操作日志 | `/system/logs/oper`      | 有 `api/oper-log`，无页面                    |
+| 异常日志 | `/system/logs/exception` | 有 `api/exception-log`，无页面               |
+| 任务日志 | `/system/jobs/logs`      | 定时任务页会跳转至此，无页面                 |
 
 ### 组织与账号
 
@@ -222,12 +222,12 @@ xnPageLayout
 
 ### 系统工具
 
-| 模块     | 截图                                   |
-| -------- | -------------------------------------- |
-| 文件管理 | ![文件管理](./docs/images/files.png)   |
-| 定时任务 | ![定时任务](./docs/images/jobs.png)    |
-| 回收站   | ![回收站](./docs/images/recycle.png)   |
-| 代码生成 | ![代码生成](./docs/images/codegen.png) |
+| 模块     | 截图                                    |
+| -------- | --------------------------------------- |
+| 文件管理 | ![文件管理](./docs/images/files.png)    |
+| 定时任务 | ![定时任务](./docs/images/jobs.png)     |
+| 回收站   | ![回收站](./docs/images/recycle.png)    |
+| 代码生成 | ![代码生成](./docs/images/codegen.png)  |
 | 接口文档 | ![接口文档](./docs/images/api-docs.png) |
 
 ## 功能概览

@@ -16,7 +16,10 @@
       <el-form-item label="用户名" prop="username">
         <el-input
           v-model="form.username"
-          :disabled="mode === 'view' || (editingId !== null && (form.username === 'admin' || form.username === 'SuperAdmin'))"
+          :disabled="
+            mode === 'view' ||
+            (editingId !== null && (form.username === 'admin' || form.username === 'SuperAdmin'))
+          "
         />
       </el-form-item>
       <el-form-item label="密码" prop="password">

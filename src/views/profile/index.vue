@@ -318,9 +318,7 @@ async function loadProfile() {
 }
 
 async function handleSave() {
-  const hasPwdInput = Boolean(
-    pwdForm.oldPassword || pwdForm.newPassword || pwdForm.confirmPassword,
-  )
+  const hasPwdInput = Boolean(pwdForm.oldPassword || pwdForm.newPassword || pwdForm.confirmPassword)
   if (canEditProfile.value) {
     const valid = await formRef.value?.validate().catch(() => false)
     if (!valid) return
@@ -347,11 +345,7 @@ async function handleSave() {
       resetPwdForm()
       await userStore.fetchProfile()
       ElMessage.success(
-        forcePwd.value
-          ? '密码已修改'
-          : canEditProfile.value
-            ? '资料与密码已保存'
-            : '密码已修改',
+        forcePwd.value ? '密码已修改' : canEditProfile.value ? '资料与密码已保存' : '密码已修改',
       )
       if (route.query.forcePwd === '1') {
         editing.value = false
@@ -363,8 +357,7 @@ async function handleSave() {
     }
     editing.value = false
   } catch (e) {
-    const msg =
-      e && typeof e === 'object' && 'message' in e ? String(e.message) : '保存失败'
+    const msg = e && typeof e === 'object' && 'message' in e ? String(e.message) : '保存失败'
     ElMessage.error(msg || '保存失败')
   } finally {
     saving.value = false
@@ -379,8 +372,7 @@ async function handleAvatarUpload(options) {
     ElMessage.success('头像已更新')
     options.onSuccess?.(res)
   } catch (e) {
-    const msg =
-      e && typeof e === 'object' && 'message' in e ? String(e.message) : '上传失败'
+    const msg = e && typeof e === 'object' && 'message' in e ? String(e.message) : '上传失败'
     ElMessage.error(msg || '上传失败')
     options.onError?.(e)
   } finally {

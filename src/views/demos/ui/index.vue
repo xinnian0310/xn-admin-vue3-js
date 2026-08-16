@@ -147,17 +147,32 @@
               <el-row :gutter="16">
                 <el-col :span="12">
                   <el-form-item label="Input">
-                    <el-input v-model="form.name" placeholder="请输入" clearable :prefix-icon="User" />
+                    <el-input
+                      v-model="form.name"
+                      placeholder="请输入"
+                      clearable
+                      :prefix-icon="User"
+                    />
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
                   <el-form-item label="Password">
-                    <el-input v-model="form.password" type="password" show-password placeholder="密码" />
+                    <el-input
+                      v-model="form.password"
+                      type="password"
+                      show-password
+                      placeholder="密码"
+                    />
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
                   <el-form-item label="Textarea">
-                    <el-input v-model="form.desc" type="textarea" :rows="2" placeholder="多行文本" />
+                    <el-input
+                      v-model="form.desc"
+                      type="textarea"
+                      :rows="2"
+                      placeholder="多行文本"
+                    />
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
@@ -167,7 +182,12 @@
                 </el-col>
                 <el-col :span="12">
                   <el-form-item label="Select">
-                    <el-select v-model="form.city" placeholder="请选择" clearable style="width: 100%">
+                    <el-select
+                      v-model="form.city"
+                      placeholder="请选择"
+                      clearable
+                      style="width: 100%"
+                    >
                       <el-option label="杭州" value="hz" />
                       <el-option label="上海" value="sh" />
                     </el-select>
@@ -175,7 +195,11 @@
                 </el-col>
                 <el-col :span="12">
                   <el-form-item label="Cascader">
-                    <el-cascader v-model="form.region" :options="cascaderOptions" style="width: 100%" />
+                    <el-cascader
+                      v-model="form.region"
+                      :options="cascaderOptions"
+                      style="width: 100%"
+                    />
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
@@ -190,7 +214,12 @@
                 </el-col>
                 <el-col :span="12">
                   <el-form-item label="DatePicker">
-                    <el-date-picker v-model="form.date" type="date" placeholder="选择日期" style="width: 100%" />
+                    <el-date-picker
+                      v-model="form.date"
+                      type="date"
+                      placeholder="选择日期"
+                      style="width: 100%"
+                    />
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
@@ -206,7 +235,11 @@
                 </el-col>
                 <el-col :span="12">
                   <el-form-item label="TimePicker">
-                    <el-time-picker v-model="form.time" placeholder="选择时间" style="width: 100%" />
+                    <el-time-picker
+                      v-model="form.time"
+                      placeholder="选择时间"
+                      style="width: 100%"
+                    />
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
@@ -254,7 +287,11 @@
                 </el-col>
                 <el-col :span="12">
                   <el-form-item label="Mention">
-                    <el-mention v-model="form.mention" :options="mentionOptions" placeholder="输入 @ 提及" />
+                    <el-mention
+                      v-model="form.mention"
+                      :options="mentionOptions"
+                      placeholder="输入 @ 提及"
+                    />
                   </el-form-item>
                 </el-col>
                 <el-col :span="24">
@@ -314,7 +351,11 @@
           <el-divider />
           <el-row :gutter="16">
             <el-col :span="8">
-              <el-tree :data="treeData" :props="{ label: 'label', children: 'children' }" default-expand-all />
+              <el-tree
+                :data="treeData"
+                :props="{ label: 'label', children: 'children' }"
+                default-expand-all
+              />
             </el-col>
             <el-col :span="8">
               <el-timeline>
@@ -406,7 +447,9 @@
             <el-button @click="drawerVisible = true">Drawer</el-button>
             <el-button
               @click="
-                ElMessageBox.confirm('确认执行该操作？', '提示', { type: 'warning' }).catch(() => {})
+                ElMessageBox.confirm('确认执行该操作？', '提示', { type: 'warning' }).catch(
+                  () => {},
+                )
               "
             >
               MessageBox
@@ -440,7 +483,9 @@
             </el-col>
             <el-col :span="8">
               <el-space wrap>
-                <el-check-tag :checked="checkTag" @change="checkTag = $event">可选标签</el-check-tag>
+                <el-check-tag :checked="checkTag" @change="checkTag = $event"
+                  >可选标签</el-check-tag
+                >
                 <el-check-tag checked type="success">成功</el-check-tag>
               </el-space>
             </el-col>
@@ -542,10 +587,7 @@ const treeSelectData = [
 const treeData = [
   {
     label: '总公司',
-    children: [
-      { label: '研发部', children: [{ label: '前端组' }] },
-      { label: '市场部' },
-    ],
+    children: [{ label: '研发部', children: [{ label: '前端组' }] }, { label: '市场部' }],
   },
 ]
 

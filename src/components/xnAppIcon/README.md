@@ -6,11 +6,11 @@
 
 `name` 经 `@/utils/icons` 的 `parseIcon` 识别类型：
 
-| 写法 | 类型 | 示例 |
-| --- | --- | --- |
+| 写法           | 类型         | 示例              |
+| -------------- | ------------ | ----------------- |
 | Element 组件名 | Element Plus | `Setting`、`User` |
-| 含 `:` | Iconify | `mdi:home` |
-| `svg:` 前缀 | 本地 SVG | `svg:my-icon` |
+| 含 `:`         | Iconify      | `mdi:home`        |
+| `svg:` 前缀    | 本地 SVG     | `svg:my-icon`     |
 
 无法解析或 `name` 为空时不渲染。
 

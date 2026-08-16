@@ -212,8 +212,7 @@ function onMouseMove(e) {
     return
   }
   const nearRight = window.innerWidth - e.clientX <= EDGE_PROXIMITY
-  const nearY =
-    e.clientY >= topPx.value - Y_PAD && e.clientY <= topPx.value + FAB_HEIGHT + Y_PAD
+  const nearY = e.clientY >= topPx.value - Y_PAD && e.clientY <= topPx.value + FAB_HEIGHT + Y_PAD
   peek.value = nearRight && nearY
 }
 onMounted(() => {
