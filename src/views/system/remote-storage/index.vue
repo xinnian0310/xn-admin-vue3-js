@@ -5,7 +5,7 @@
       :closable="false"
       show-icon
       class="remote-storage-page__alert"
-      title="可新增多条「名字 / 路径」，新增 / 编辑 / 删除即时落库。保存结果组装为对象覆盖前端 appConfig.storage（如 { minio: 'http://127.0.0.1:9000/xn-admin/' }）。云端为空时使用本地 app.js 兜底。密钥勿写入前端。"
+      title="可新增多条「名字 / 路径」，新增 / 编辑 / 删除即时落库。保存结果覆盖前端 appConfig.storage。推荐同源相对路径（minio → /minio/，kkFileView → /kkFileView/），由 Vite / Nginx 反代，勿写 127.0.0.1。云端为空时使用本地 app.js 兜底。密钥勿写入前端。"
     />
     <xnPageLayout :show-pagination="false" :loading="loading || saving">
       <template #search>
@@ -61,7 +61,7 @@
             v-model="form.path"
             :disabled="dialogMode === 'view'"
             maxlength="1000"
-            placeholder="如 http://127.0.0.1:9000/xn-admin/"
+            placeholder="如 /minio/"
           />
         </el-form-item>
       </el-form>

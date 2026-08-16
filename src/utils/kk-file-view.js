@@ -11,6 +11,14 @@ export function encodeKkFileViewUrl(fileUrl) {
   return btoa(binary)
 }
 
+/** kkFileView 服务端拉文件需要绝对地址；相对路径拼当前站点 origin */
+function toAbsoluteFileUrl(fileUrl) {
+  const value = (fileUrl || '').trim()
+  if (!value || /^https?:\/\//i.test(value)) return value
+  if (typeof window === 'undefined' || !window.location?.origin) return value
+  return value.startsWith('/') ? `${window.location.origin}${value}` : `${window.location.origin}/${value}`
+}
+
 function normalizeServiceBase(serviceBase) {
   const base = (serviceBase || '').trim()
   if (!base) return ''
@@ -44,7 +52,7 @@ export function buildKkFileViewPreviewUrl(serviceBase, fileUrl, fileName) {
 export function resolveKkFileViewPreviewUrl(filePath, fileName) {
   return buildKkFileViewPreviewUrl(
     resolveStorageBase('kkFileView'),
-    resolveAttachmentUrl(filePath),
+    toAbsoluteFileUrl(resolveAttachmentUrl(filePath)),
     fileName,
   )
 }
