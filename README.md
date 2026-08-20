@@ -1,5 +1,7 @@
 # xn-admin-vue3-js
 
+[简体中文](README.md) | [English](README.en.md)
+
 心念后台管理系统前端：Vue 3 + **JavaScript** + Vite + Element Plus（Composition API / `<script setup>`）。
 
 xn-admin-vue3-js 是「心念后台」的 JavaScript 管理端（Composition API / `<script setup>`），功能与基准仓库 xn-admin-vue3-ts 对齐，共用微服务后端 xn-admin-cloud。适合不使用 TypeScript、希望以 Composition 写法快速落地中后台的团队；内置登录鉴权、动态菜单、RBAC、CRUD、主题布局、监控与文件任务等完整能力。采用 Apache License 2.0 开源，**可商用、可自用**。
