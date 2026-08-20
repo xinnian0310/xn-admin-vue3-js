@@ -15,6 +15,8 @@ xn-admin-vue3-js 是「心念后台」的 JavaScript 管理端（Composition API
 
 版本：`1.0.0` · 许可证：[Apache-2.0](./LICENSE) · **可商用 / 可自用** · Copyright 2026 心念
 
+**在线演示：** https://vue3-js.xinniankeji.vip · 官网：https://xinniankeji.vip
+
 ## 相关仓库
 
 开源范围仅后端 + 四套管理端：
