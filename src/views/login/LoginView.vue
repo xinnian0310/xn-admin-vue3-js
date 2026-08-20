@@ -15,8 +15,9 @@
           <div class="brand-logo-plate">
             <img
               class="brand-logo"
-              :src="appConfig.app.logo || '/xinnian-tech-logo.png'"
+              :src="logoSrc"
               alt="心念科技"
+              @error="onLogoError"
             />
           </div>
           <p class="brand-slogan">心有所念，码有所成</p>
@@ -149,7 +150,7 @@ import { useRouter } from 'vue-router'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import { User, Lock } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
-import { appConfig } from '@/config/app'
+import { appConfig, defaultAppConfig } from '@/config/app'
 import { homeConfig } from '@/config/home'
 import { useUserStore } from '@/stores/user'
 import { getActive } from '@/api/login-page'
@@ -159,6 +160,14 @@ const userStore = useUserStore()
 const formRef = ref()
 const loading = ref(false)
 const intro = homeConfig.intro
+const localLogo = defaultAppConfig.app.logo
+const logoFailed = ref(false)
+const logoSrc = computed(() =>
+  logoFailed.value ? localLogo : appConfig.app.logo?.trim() || localLogo,
+)
+function onLogoError() {
+  if (logoSrc.value !== localLogo) logoFailed.value = true
+}
 const captchaEnabled = ref(false)
 const captchaType = ref(null)
 const captchaId = ref('')
