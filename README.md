@@ -2,9 +2,16 @@
 
 心念后台管理系统前端：Vue 3 + **JavaScript** + Vite + Element Plus（Composition API / `<script setup>`）。
 
-本仓库**独立开源**。功能与基准仓库 **xn-admin-vue3-ts** 对齐，共用微服务后端 **xn-admin-cloud**（网关 `8088`）。
+xn-admin-vue3-js 是「心念后台」的 JavaScript 管理端（Composition API / `<script setup>`），功能与基准仓库 xn-admin-vue3-ts 对齐，共用微服务后端 xn-admin-cloud。适合不使用 TypeScript、希望以 Composition 写法快速落地中后台的团队；内置登录鉴权、动态菜单、RBAC、CRUD、主题布局、监控与文件任务等完整能力。采用 Apache License 2.0 开源，**可商用、可自用**。
 
-版本：`1.0.0` · 许可证：[Apache-2.0](./LICENSE) · Copyright 2026 心念
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](./LICENSE)
+[![开源](https://img.shields.io/badge/开源-免费-success.svg)](./LICENSE)
+[![商用](https://img.shields.io/badge/商用-允许-brightgreen.svg)](./LICENSE)
+[![自用](https://img.shields.io/badge/自用-允许-brightgreen.svg)](./LICENSE)
+
+本仓库**独立开源**（Apache-2.0，**可商用、可自用**）。功能与基准仓库 **xn-admin-vue3-ts** 对齐，共用微服务后端 **xn-admin-cloud**（网关 `8088`）。
+
+版本：`1.0.0` · 许可证：[Apache-2.0](./LICENSE) · **可商用 / 可自用** · Copyright 2026 心念
 
 ## 相关仓库
 
@@ -269,6 +276,18 @@ xnPageLayout
   <img src="./docs/donation/donate.png" alt="支持捐赠（微信支付 / 支付宝）" width="480" />
 </p>
 
-## 许可证
+## 开源与许可证
 
-[Apache License 2.0](./LICENSE)
+本项目采用 [Apache License 2.0](./LICENSE) **免费开源**，**允许个人自用与商业使用**，无需单独购买授权。
+
+| 用途 | 是否允许 |
+|------|----------|
+| 个人学习、自用部署 | 允许 |
+| 二次开发、修改源码 | 允许 |
+| 商业项目使用、对外交付 | 允许 |
+| 闭源商用 | 允许（须遵守 Apache-2.0） |
+| 再分发源码或编译产物 | 允许 |
+
+使用、修改或分发时请：保留版权声明、本许可证文本及 NOTICE（如有）；对修改过的文件注明变更。软件按「现状」提供，不附带任何明示或默示担保。完整条款见 [LICENSE](./LICENSE)。
+
+捐赠为自愿支持，不构成商业授权或付费售后。
